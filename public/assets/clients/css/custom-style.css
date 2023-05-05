@@ -1,0 +1,30 @@
+.img-thunhosize {
+    display: inline-block;
+    max-width: 60px;
+    height: 60px;
+}
+
+.img-detailproduct {
+    display: inline-block;
+    max-width: 550px;
+    height: 550px;
+}
+
+.star i {
+    color: grey;
+}
+
+.star.active i {
+    color: yellow;
+}
+
+.img-carts {
+    display: inline-block;
+    max-width: 80px;
+    height: 80px;
+}
+
+.form-select {
+    border-radius: 3px;
+    color: #797979;
+}
