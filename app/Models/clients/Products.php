@@ -18,8 +18,6 @@ class Products extends Model
 
         $getProduct = DB::table('product');
 
-
-
         if (!empty($filters)) {
             $getProduct = $getProduct->where($filters);
 
@@ -36,11 +34,9 @@ class Products extends Model
             $getProduct = $getProduct->get();
         }
 
-
-        // dd(DB::getQueryLog());
         return $getProduct;
     }
-
+    //Chi tiết sản phẩm
     public function getDetailProduct($id)
     {
         DB::enableQueryLog();
@@ -50,12 +46,9 @@ class Products extends Model
             ->join('brand', 'product.BrandID', '=', 'brand.BrandID')
             ->where('ProductID', $id)->first();
 
-
-
-        // dd(DB::getQueryLog());
         return $getDetailProduct;
     }
-
+    //lấy ra danh sách đánh giá, mỗi trang chỉ có 2 đánh giá
     public function getRatingProduct($id)
     {
         DB::enableQueryLog();
@@ -66,10 +59,9 @@ class Products extends Model
             ->paginate(2)
             ->withQueryString();
 
-        // dd(DB::getQueryLog());
         return $getRatingProduct;
     }
-
+    //tính giá trị trung bình sao đánh giá của một sản phẩm
     public function getAverageRating($id)
     {
         DB::enableQueryLog();
@@ -81,7 +73,7 @@ class Products extends Model
         // dd(DB::getQueryLog());
         return $averageRating;
     }
-
+    //đếm có bao nhiêu đánh giá để hiện ra
     public function getCountRating($id)
     {
         DB::enableQueryLog();
@@ -93,10 +85,18 @@ class Products extends Model
         // dd(DB::getQueryLog());
         return $countRating;
     }
-
+    //đăng đánh giá
     public function postRating($data)
     {
         return DB::table('rating')->insert($data);
 
     }
+    //update sản phẩm sau khi được đặt thành công
+    public function updateQuantityProduct($id, $quantity)
+    {
+        return DB::table('product')
+            ->where('ProductID', $id)
+            ->update(['Quantity' => $quantity]);
+    }
+
 }

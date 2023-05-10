@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\clients\HomeController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\clients\CartsController;
 use App\Http\Controllers\clients\CheckoutController;
 use App\Http\Controllers\clients\DetailProductController;
 use App\Http\Controllers\clients\LoginController;
+use App\Http\Controllers\clients\OrderedController;
 
 
 /*
@@ -38,4 +40,6 @@ Route::get('/tai-khoan', [LoginController::class, 'index'])->name('login');
 Route::post('/postLogin', [LoginController::class, 'postLogin'])->name('postLogin');
 Route::post('/tai-khoan', [LoginController::class, 'create'])->name('newUser');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
+Route::get('/don-mua', [OrderedController::class, 'index'])->name('ordered');
+Route::post('/don-mua/{id?}', [OrderedController::class, 'updateStatus'])->name('update-status');
 

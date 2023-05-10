@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clients;
 use App\Http\Controllers\Controller;
 use App\Models\clients\Checkout;
 use App\Models\clients\Carts;
+use App\Models\clients\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use DateTime;
@@ -15,12 +16,16 @@ class CheckoutController extends Controller
     private $getCustomerID;
     private $getProduct;
     private $addCheckout;
+    private $selectOderID;
 
+    private $updateQuantity;
     public function __construct()
     {
+        $this->updateQuantity = new Products();
         $this->getCustomerID = new Carts();
         $this->getProduct = new Checkout();
         $this->addCheckout = new Checkout();
+        $this->selectOderID = new Checkout();
     }
 
     public function index()
@@ -35,24 +40,21 @@ class CheckoutController extends Controller
             }
         }
         if (count($productCheckOut) < 1) {
-            return redirect()->route('product')->with('msg','Vui lòng thêm sản phẩm vào giỏ hàng!');
+            return redirect()->route('product')->with('msg', 'Vui lòng thêm sản phẩm vào giỏ hàng!');
         }
 
 
         return view('clients/checkout', compact('title', 'productCheckOut', 'totalPrice'));
     }
 
-
+    //Tạo checkout
     public function create(Request $request)
     {
+        //Lấy id của customer dựa vào session 
         $customerID = $this->getCustomerID->getCustomerID(session('username'));
         $date = new DateTime();
         $date->setTimezone(new DateTimeZone('Asia/Ho_Chi_Minh'));
 
-        // $path = public_path('assets/clients/json/data.json');
-
-        // $data = file_get_contents($path);
-        //  dd($data);
         $data = file_get_contents(public_path('assets/clients/json/data.json'));
         $diaGioiHanhChinh = json_decode($data, true);
 
@@ -97,20 +99,44 @@ class CheckoutController extends Controller
             'Status' => 1
         ];
 
-        if (!empty($request->input('productID', []))) {
-            $filters = [];
-            $productIDs = $request->input('productID', []);
+        $orderProduct = $this->addCheckout->addCheckout($checkout);
+        if ($orderProduct) {
+            //Lấy OrderID 
+            $OrderID = $this->selectOderID->selectOderID();
+            //Lấy tất cả sản phẩm checkout của customer đó để xuống dưới nhập vào orderdetail
+            $productCheckOuts = $this->getProduct->productCheckOut($customerID);
+            //Duyệt tất cả các sản phẩm được lấy ra
+            foreach ($productCheckOuts as $productCheckOut) {
+                $productID = $productCheckOut->ProductID;
+                $orderdetail = [
+                    'OrderID' => $OrderID,
+                    'ProductID' => $productID,
+                    'QuantityOrdered' => $productCheckOut->CartQuantity,
+                    'Price' => $productCheckOut->CartQuantity * $productCheckOut->Price
+                ];
+                //Tiến hành thêm sản phẩm vào orderdetail
+                $this->addCheckout->addOrderDetail($orderdetail);
+                //tiến hành update lại sản phẩm trong kho, bằng tổng sp hiện có trừ cho số sản phẩm được đặt
+                $newQuantity = $productCheckOut->Quantity - $productCheckOut->CartQuantity;
+                //Sau khi thêm thành công thì tiến hàng giảm số lượng sản phẩm trong kho xuống theo sl đã được đặt
+                $this->updateQuantity->updateQuantityProduct($productID, $newQuantity);
 
-            foreach ($productIDs as $id) {
-                $filters = [['carts.productID', '=', $id]];
-                $this->addCheckout->updateStatusCart($filters, $customerID);
+            }
+
+            //Kiểm tra số lượng sản phẩm gửi lên và update trạng thái cho nó 
+            if (!empty($request->input('productID', []))) {
+                $filters = [];
+                $productIDs = $request->input('productID', []);
+
+                foreach ($productIDs as $id) {
+                    $filters = [['carts.productID', '=', $id]];
+                    $this->addCheckout->updateStatusCart($filters, $customerID);
+                }
             }
         }
-        $this->addCheckout->addCheckout($checkout);
 
-        return "Đặt hàng thành công! Đơn hàng của bạn đang đợi người bán xác nhận!";
+        return redirect()->route('ordered');
 
     }
-
 
 }
