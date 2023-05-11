@@ -11,7 +11,7 @@ use App\Http\Controllers\clients\CheckoutController;
 use App\Http\Controllers\clients\DetailProductController;
 use App\Http\Controllers\clients\LoginController;
 use App\Http\Controllers\clients\OrderedController;
-use App\Http\Controllers\clients\search;
+
 
 
 /*
