@@ -28,3 +28,85 @@
     border-radius: 3px;
     color: #797979;
 }
+
+.form-search-header {
+    position: relative;
+}
+
+.form-search-header .button_microphone {
+    position: absolute;
+    top: 0;
+    right: 15%;
+    border: 0;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-radius: 200px;
+    text-align: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #868080;
+}
+
+.input-search {
+    width: 30px;
+    height: 30px;
+    padding-left: 30px;
+    font-size: 13px;
+    visibility: hidden;
+}
+
+.ti-search {
+    position: relative;
+    right: -25px;
+    z-index: 2
+}
+
+.new-search-icon {
+    position: relative;
+    right: -50px;
+    z-index: 2;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.close-icon {
+    position: relative;
+    left: -20px;
+    z-index: 2;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.voice-search-icon {
+    position: relative;
+    left: -55px;
+    z-index: 2;
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.search-open .input-search {
+    width: 200px;
+    transition: width 0.5s ease-in-out;
+}
+
+.search-open .ti-search {
+    visibility: hidden;
+}
+
+.search-open .new-search-icon {
+    visibility: visible;
+}
+
+.search-open .close-icon {
+    visibility: visible;
+}
+
+.search-open .voice-search-icon {
+    visibility: visible;
+}
+
+.search-open .input-search {
+    visibility: visible;
+}

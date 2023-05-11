@@ -91,15 +91,7 @@
                                     </li>
                                     <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                            role="button" aria-haspopup="true" aria-expanded="false">Pages</a>
-                                        <ul class="dropdown-menu">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="tracking.html">Tracking</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="elements.html">Elements</a>
-                                            </li>
-                                        </ul>
+                                            role="button" aria-haspopup="true" aria-expanded="false">Giới thiệu</a>
                                     </li>
                                     <li class="nav-item {{ Request::url() == route('contact') ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('contact') }}">Liên hệ</a>
@@ -110,9 +102,14 @@
                             <div class="col-lg-5 pr-0">
                                 <ul class="nav navbar-nav navbar-right right_nav pull-right">
                                     <li class="nav-item">
-                                        <a href="#" class="icons">
-                                            <i class="ti-search" aria-hidden="true"></i>
-                                        </a>
+                                        <form class="icons" action="{{route('search')}}" method="GET">
+                                            @csrf
+                                            <i class="ti-search new-search-icon" aria-hidden="true"></i>
+                                            <i class="ti-search search-icon" aria-hidden="true"></i>
+                                            <input type="text" name="search" class="input-search">
+                                            <i class="ti-close close-icon" aria-hidden="true"></i>
+                                            <i class="fa fa-microphone voice-search-icon" aria-hidden="true"></i>
+                                        </form>
                                     </li>
 
                                     <li class="nav-item">
@@ -141,13 +138,11 @@
                                         </ul>
                                     </li>
                                     <li></li>
-                                    <li class="nav-item">
+                                    <li class="person nav-item" >
                                         @if (session('username'))
-                                            <a class="nav-link">Chào {{ session('username') }}</a>
+                                            <a class="nav-link" >Chào {{ session('username') }}</a>
                                         @endif
-
                                     </li>
-
                                 </ul>
                             </div>
                         </div>

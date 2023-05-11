@@ -19,7 +19,6 @@ class DetailProductController extends Controller
     private $postRating;
     public function __construct()
     {
-        // $this->middleware('auth');
         $this->getDetailProduct = new Products();
         $this->getRatingProduct = new Products();
         $this->getAverageRating = new Products();

@@ -11,6 +11,7 @@ use App\Http\Controllers\clients\CheckoutController;
 use App\Http\Controllers\clients\DetailProductController;
 use App\Http\Controllers\clients\LoginController;
 use App\Http\Controllers\clients\OrderedController;
+use App\Http\Controllers\clients\search;
 
 
 /*
@@ -42,4 +43,5 @@ Route::post('/tai-khoan', [LoginController::class, 'create'])->name('newUser');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 Route::get('/don-mua', [OrderedController::class, 'index'])->name('ordered');
 Route::post('/don-mua/{id?}', [OrderedController::class, 'updateStatus'])->name('update-status');
+Route::get('/san-pham-tim-kiem/{search?}', [ProductsController::class, 'search'])->name('search');
 

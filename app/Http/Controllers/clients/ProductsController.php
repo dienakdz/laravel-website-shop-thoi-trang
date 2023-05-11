@@ -65,4 +65,8 @@ class ProductsController extends Controller
         return view('clients/products',compact('title', 'productList'));
     }
 
+    public function search($data)
+    {
+        return "SEARCH" .$data;
+    }
 }
