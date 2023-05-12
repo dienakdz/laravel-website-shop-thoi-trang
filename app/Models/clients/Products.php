@@ -99,4 +99,20 @@ class Products extends Model
             ->update(['Quantity' => $quantity]);
     }
 
+    //xử lý tìm kiếm
+    public function search($searchTerm)
+    {
+
+        return DB::table('product')
+            ->join('categories', 'product.CategoryID', '=', 'categories.CategoryID')
+            ->join('brand', 'product.BrandID', '=', 'brand.BrandID')
+            ->select('product.*','categories.CategoryName', 'brand.BrandName')
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('ProductName', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('CategoryName', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('BrandName', 'like', '%' . $searchTerm . '%');
+            })
+            ->paginate(9);
+    }
+
 }

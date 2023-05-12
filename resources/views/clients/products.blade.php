@@ -26,11 +26,7 @@
 
                 <div class="latest_product_inner">
                     <div class="row">
-                        @if (count($productList) == 0)
-                            <p>KHÔNG CÓ DỮ LIỆU TÌM KIẾM CHO DANH MỤC VÀ THƯƠNG HIỆU NÀY!</p>
-                        @endif
-
-                        @foreach ($productList as $item)
+                        @forelse ($itemSearch ?? $productList as $item)
                             <div class="col-lg-4 col-md-6">
                                 <div class="single-product">
                                     <div class="product-img">
@@ -38,15 +34,9 @@
                                             src="{{ asset('assets/admin/img/upload/' . $item->Picture) }}"
                                             alt="{{ $item->ProductName }}" />
                                         <div class="p_icon">
-                                            <a href="#">
-                                                <i class="ti-eye"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="ti-heart"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="ti-shopping-cart"></i>
-                                            </a>
+                                            <a href="#"><i class="ti-eye"></i></a>
+                                            <a href="#"><i class="ti-heart"></i></a>
+                                            <a href="#"><i class="ti-shopping-cart"></i></a>
                                         </div>
                                     </div>
                                     <div class="product-btm">
@@ -56,17 +46,21 @@
                                         </a>
                                         <div class="mt-3">
                                             <span class="mr-4">{{ number_format($item->Price) }}đ</span>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-
+                        @empty
+                            <p>KHÔNG CÓ DỮ LIỆU TÌM KIẾM CHO DANH MỤC VÀ THƯƠNG HIỆU NÀY!</p>
+                        @endforelse
                     </div>
                 </div>
                 <div style="text-align: center; margin-top: 20px;margin-bottom: 20px;">
-                    {{ $productList->links() }}
+                    @if (!empty($itemSearch))
+                        {{ $itemSearch->links() }}
+                    @else
+                        {{ $productList->links() }}
+                    @endif
                 </div>
             </div>
 

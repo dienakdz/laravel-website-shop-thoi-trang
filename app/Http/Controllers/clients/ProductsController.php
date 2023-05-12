@@ -9,10 +9,12 @@ use App\Models\clients\Products;
 class ProductsController extends Controller
 {
     private $getRamDomProduct;
+    private $searchProduct;
 
     public function __construct()
     {
         $this->getRamDomProduct = new Products();
+        $this->searchProduct = new Products();
     }
 
     public function index(Request $request)
@@ -65,8 +67,13 @@ class ProductsController extends Controller
         return view('clients/products',compact('title', 'productList'));
     }
 
-    public function search($data)
+    public function search(Request $request)
     {
-        return "SEARCH" .$data;
+        $title = 'Sản phẩm';
+        $itemSearch = $this->searchProduct->search($request->search);
+
+        // dd($itemSearch);
+
+        return view('clients/products',compact('title', 'itemSearch'));
     }
 }

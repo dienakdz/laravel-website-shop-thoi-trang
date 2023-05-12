@@ -102,8 +102,7 @@
                             <div class="col-lg-5 pr-0">
                                 <ul class="nav navbar-nav navbar-right right_nav pull-right">
                                     <li class="nav-item">
-                                        <form class="icons" action="{{route('search')}}" method="GET">
-                                            @csrf
+                                        <form class="icons" action="{{ route('search') }}" method="GET">
                                             <i class="ti-search new-search-icon" aria-hidden="true"></i>
                                             <i class="ti-search search-icon" aria-hidden="true"></i>
                                             <input type="text" name="search" class="input-search">
@@ -138,9 +137,9 @@
                                         </ul>
                                     </li>
                                     <li></li>
-                                    <li class="person nav-item" >
+                                    <li class="person nav-item">
                                         @if (session('username'))
-                                            <a class="nav-link" >Chào {{ session('username') }}</a>
+                                            <a class="nav-link">Chào {{ session('username') }}</a>
                                         @endif
                                     </li>
                                 </ul>

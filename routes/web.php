@@ -29,6 +29,7 @@ use App\Http\Controllers\clients\OrderedController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/san-pham', [ProductsController::class, 'index'])->name('product');
 Route::get('/lien-he', [ContactController::class, 'index'])->name('contact');
+Route::post('/lien-he', [ContactController::class, 'postContact'])->name('post-contact');
 Route::get('/gio-hang', [CartsController::class, 'index'])->name('carts');
 Route::post('/gio-hang', [CartsController::class, 'updateQuantity'])->name('update-carts');
 Route::post('/xoa-san-pham-gio-hang/{id?}', [CartsController::class, 'deleteProductCart'])->name('delete-product-cart');
@@ -43,5 +44,4 @@ Route::post('/tai-khoan', [LoginController::class, 'create'])->name('newUser');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 Route::get('/don-mua', [OrderedController::class, 'index'])->name('ordered');
 Route::post('/don-mua/{id?}', [OrderedController::class, 'updateStatus'])->name('update-status');
-Route::get('/san-pham-tim-kiem/{search?}', [ProductsController::class, 'search'])->name('search');
-
+Route::get('/tim-kiem-san-pham/{search?}', [ProductsController::class, 'search'])->name('search');

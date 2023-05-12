@@ -3,84 +3,41 @@
 namespace App\Http\Controllers\Clients;
 
 use App\Http\Controllers\Controller;
+use DateTimeZone;
 use Illuminate\Http\Request;
-
+use App\Models\clients\Contact;
+use Nette\Utils\DateTime;
 class ContactController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $insertContact;
+    public function __construct()
+    {
+        $this->insertContact = new Contact();
+    }
+
     public function index()
     {
-        $this->data['title'] = 'Liên hệ';
-        return view('clients/contact', $this->data);
+        $title = 'Liên hệ';
+        return view('clients/contact',compact('title'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function postContact(Request $request)
     {
-        //
-    }
+        $date = new DateTime();
+        $date->setTimezone(new DateTimeZone('Asia/Ho_Chi_Minh'));
+        
+        $contact = [
+            'FullName' => $request->name,
+            'Email' => $request->email,
+            'Subject' => $request->subject,
+            'Content' => $request->message,
+            'ContactDate' => $date->format('Y-m-d H:i:s'),
+            'Status' => 0
+        ];
+        // dd($contact);
+        $this->insertContact->insert($contact);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->json(['success' => true]);;
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
 }
