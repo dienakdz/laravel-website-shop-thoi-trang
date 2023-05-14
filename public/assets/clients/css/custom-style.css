@@ -110,3 +110,104 @@
 .search-open .input-search {
     visibility: visible;
 }
+
+
+/* Trang gioi thieu */
+
+.about {
+    margin: 5% 0 5% 0;
+    font-family: 'Josefin Sans', sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 78px 0px;
+    background-color: #909391;
+    border-radius: 20px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.about img {
+    border-radius: 5px;
+    height: auto;
+    width: 420px;
+}
+
+.about-text {
+    width: 550px;
+}
+
+.about .main {
+    width: 1130px;
+    max-width: 95%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.about-text h5 {
+    font-weight: bold;
+    font-family: 'Josefin Sans', sans-serif;
+    color: white;
+    font-size: 25px;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+.about-text h1 {
+    font-weight: bold;
+    font-family: 'Josefin Sans', sans-serif;
+    color: white;
+    font-size: 50px;
+    letter-spacing: 2px;
+}
+
+.about span {
+    color: rgb(4, 96, 33);
+}
+
+.about-text p {
+    color: white;
+    letter-spacing: 1px;
+    line-height: 28px;
+    font-size: 18px;
+    margin-bottom: 45px;
+}
+
+.about button {
+    background: rgb(4, 96, 33);
+    color: white;
+    text-decoration: none;
+    border: 2px solid transparent;
+    font-weight: bold;
+    padding: 13px 30px;
+    border-radius: 30px;
+    transition: .4s;
+}
+
+.about button a {
+    color: white;
+    text-decoration: none;
+}
+
+.about button:hover {
+    background: transparent;
+    border: 2px solid black;
+    color: white;
+    cursor: pointer;
+}
+
+.form-infor {
+    text-align: center;
+}
+
+.form-infor button {
+    margin-top: 5%;
+}
+
+.form-infor button:hover {
+    background-color: rgb(11, 122, 11);
+    color: white;
+    text-align: center;
+    align-items: center;
+    margin-top: 5%;
+}

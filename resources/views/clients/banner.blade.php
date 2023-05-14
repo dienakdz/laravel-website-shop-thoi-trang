@@ -7,7 +7,6 @@
         >
             <div class="mb-3 mb-md-0">
             <h2>{{ $title }}</h2>
-            <p>Very us move be blessed multiply night</p>
             </div>
             <div class="page_link">
             <a href="{{ route('home') }}">Trang chủ</a>

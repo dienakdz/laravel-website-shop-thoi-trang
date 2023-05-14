@@ -599,14 +599,14 @@ ul {
 .banner_area {
     position: relative;
     z-index: 1;
-    min-height: 200px
+    min-height: 100px
 }
 
 .banner_area .banner_inner {
     position: relative;
     overflow: hidden;
     width: 100%;
-    min-height: 200px;
+    min-height: 100px;
     background: #f6f6f6;
     z-index: 1
 }

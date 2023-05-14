@@ -16,13 +16,9 @@ class Login extends Model
     {
         DB::enableQueryLog();
 
-        $getUser = DB::table('customer');
-
-        if (!empty($account)) {
-            $getUser = $getUser->where($account);
-        }
-        $getUser = $getUser
-            ->first();
+        $getUser = DB::table('customer')
+        ->where($account)
+        ->first();
 
         // dd(DB::getQueryLog());
         return $getUser;

@@ -29,6 +29,14 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
             integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
     @endif
+    @if (request()->routeIs('admin.login') === true)
+        <link rel="stylesheet" href="{{ asset('assets/clients/css/login.css') }}" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+            integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+    @endif
+    @if (request()->routeIs('about') === true)
+        <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+    @endif
     @yield('css')
 </head>
 
@@ -77,21 +85,10 @@
                                         <a href="{{ route('product') }}" class="nav-link dropdown-toggle"
                                             role="button" aria-haspopup="true" aria-expanded="false">Sản phẩm</a>
                                     </li>
-                                    <li class="nav-item submenu dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                            role="button" aria-haspopup="true" aria-expanded="false">Blog</a>
-                                        <ul class="dropdown-menu">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="blog.html">Blog</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="single-blog.html">Blog Details</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="nav-item submenu dropdown">
-                                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                            role="button" aria-haspopup="true" aria-expanded="false">Giới thiệu</a>
+                                    <li
+                                        class="nav-item submenu dropdown {{ Request::url() == route('about') ? 'active' : '' }}">
+                                        <a href="{{ route('about') }}" class="nav-link dropdown-toggle" role="button"
+                                            aria-haspopup="true" aria-expanded="false">Giới thiệu</a>
                                     </li>
                                     <li class="nav-item {{ Request::url() == route('contact') ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('contact') }}">Liên hệ</a>
@@ -128,7 +125,7 @@
                                                 </li>
                                             @else
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="#">Admin</a>
+                                                    <a class="nav-link" href="{{ route('admin.login') }}">Admin</a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" href="{{ route('login') }}">Đăng nhập</a>
@@ -137,9 +134,18 @@
                                         </ul>
                                     </li>
                                     <li></li>
-                                    <li class="person nav-item">
+
+                                    <li class="person nav-item submenu dropdown">
                                         @if (session('username'))
-                                            <a class="nav-link">Chào {{ session('username') }}</a>
+                                            <a class="nav-link ">Chào {{ session('username') }}</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="{{ route('information') }}">Cá Nhân</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" href="{{ route('ordered') }}">Đơn Mua</a>
+                                                </li>
+                                            </ul>
                                         @endif
                                     </li>
                                 </ul>

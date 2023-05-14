@@ -31,13 +31,12 @@ class LoginController extends Controller
     public function create(Request $request)
     {
         $check_username = $this->checkUser->checkUser($request->username_signup);
-        if($check_username == null)
-        {
+        if ($check_username == null) {
             $dataInsert = [
                 'Username' => $request->username_signup,
                 'Password' => md5($request->pass_signup),
                 'Status' => 1
-    
+
             ];
             // dd($dataInsert);
             $this->newUser->newUser($dataInsert);
@@ -46,26 +45,22 @@ class LoginController extends Controller
                 'success' => true,
                 'message' => 'Đăng kí thành công!',
             ]);
-        }
-        else
-        {
+        } else {
             return redirect()->route('login')->with('msg_signup', 'Tên tài khoản đã tồn tại!');
         }
-        
+
     }
 
     public function postLogin(Request $request)
     {
         $account = [];
-        if (!empty($request->username_signin && !empty($request->pass_signin))) {
-            $username = $request->username_signin;
-            $password = md5($request->pass_signin);
-            $account[] = ['customer.Username', '=', $username];
-            $account[] = ['customer.Password', '=', $password];
-        }
+
+        $username = $request->username_signin;
+        $password = md5($request->pass_signin);
+        $account[] = ['customer.Username', '=', $username];
+        $account[] = ['customer.Password', '=', $password];
 
         $user = $this->postLogin->postLogin($account);
-        // dd($user);
 
         // Xác thực tài khoản người dùng
         if ($user != null) {

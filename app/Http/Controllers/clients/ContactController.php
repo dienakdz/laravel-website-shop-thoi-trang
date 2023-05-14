@@ -37,7 +37,7 @@ class ContactController extends Controller
         // dd($contact);
         $this->insertContact->insert($contact);
 
-        return response()->json(['success' => true]);;
+        return response()->json(['success' => true]);
     }
     
 }

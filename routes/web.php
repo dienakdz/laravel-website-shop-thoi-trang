@@ -1,6 +1,8 @@
 <?php
 
 
+
+use App\Http\Controllers\clients\InforController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\clients\HomeController;
@@ -11,8 +13,11 @@ use App\Http\Controllers\clients\CheckoutController;
 use App\Http\Controllers\clients\DetailProductController;
 use App\Http\Controllers\clients\LoginController;
 use App\Http\Controllers\clients\OrderedController;
+use App\Http\Controllers\clients\AboutController;
 
 
+//Admin
+use App\Http\Controllers\admin\LoginAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +30,7 @@ use App\Http\Controllers\clients\OrderedController;
 |
 */
 
+//Xử lý bên clients
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/san-pham', [ProductsController::class, 'index'])->name('product');
@@ -45,3 +51,14 @@ Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 Route::get('/don-mua', [OrderedController::class, 'index'])->name('ordered');
 Route::post('/don-mua/{id?}', [OrderedController::class, 'updateStatus'])->name('update-status');
 Route::get('/tim-kiem-san-pham/{search?}', [ProductsController::class, 'search'])->name('search');
+Route::get('/gioi-thieu', [AboutController::class, 'index'])->name('about');
+Route::get('/thong-tin-ca-nhan', [InforController::class, 'index'])->name('information');
+Route::post('/cap-nhat-thong-tin', [InforController::class, 'updateInfor'])->name('update-infor');
+Route::post('/doi-mat-khau', [InforController::class, 'changePass'])->name('change-password');
+
+//Xử lý cho admin
+Route::prefix('admin')->group(function () {
+    Route::get('/', [LoginAdminController::class, 'index'])->name('admin.login');
+    Route::post('/', [LoginAdminController::class, 'login'])->name('admin.login');
+});
+
