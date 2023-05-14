@@ -1,5 +1,5 @@
 ## About Code
-Hiện tại đang làm chưa hoàn thành! Chỉ mới hoàn thành sơ lược về Clients, còn Admin đang tiến hành xây dựng!
+Hiện tại đang làm chưa hoàn thành! Hoàn thành về Clients, còn Admin đang tiến hành xây dựng!
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
