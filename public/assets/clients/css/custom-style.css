@@ -211,3 +211,186 @@
     align-items: center;
     margin-top: 5%;
 }
+
+
+/* ============================================================
+   ĐỒNG BỘ BOX SẢN PHẨM (CARD PRODUCT) & BỐ CỤC TRANG CHỦ
+   ============================================================ */
+
+/* 1. Đảm bảo toàn bộ thẻ cột trong row có thể co giãn bằng nhau */
+.feature_product_area .row > [class*="col-"],
+.new_product_area .row > [class*="col-"],
+.inspired_product_area .row > [class*="col-"],
+.cat_product_area .latest_product_inner .row > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. Box sản phẩm đồng bộ chiều cao và kiểu dáng hiện đại */
+.single-product {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    margin-bottom: 30px !important;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #eef0f2;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.single-product:hover {
+    border-color: #71cd14;
+    box-shadow: 0 8px 20px rgba(113, 205, 20, 0.15);
+    transform: translateY(-4px);
+}
+
+/* 3. Khung chứa ảnh sản phẩm: cố định chiều cao, nền sáng, giữ tỉ lệ ảnh trọn vẹn */
+.single-product .product-img {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background-color: #fbfbfb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 15px;
+}
+
+.single-product .product-img img,
+.single-product .product-img .img-fluid,
+.single-product .product-img .card-img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    transition: transform 0.4s ease;
+}
+
+.single-product:hover .product-img img {
+    transform: scale(1.05);
+}
+
+/* 4. Khung thông tin dưới ảnh: tự giãn nở lấp đầy đáy */
+.single-product .product-btm {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 1 auto !important;
+    padding: 16px 18px !important;
+    border: none !important;
+    border-top: 1px solid #f0f2f1 !important;
+    text-align: left;
+    background: #ffffff;
+}
+
+/* 5. Tiêu đề sản phẩm: cố định 2 dòng, chiều cao đều tăm tắp */
+.single-product .product-btm h4 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 42px;
+    height: 42px;
+    transition: color 0.2s ease;
+}
+
+.single-product:hover .product-btm h4 {
+    color: #71cd14;
+}
+
+/* 6. Phần hiển thị giá tiền */
+.single-product .product-btm .product-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: #e74c3c;
+    letter-spacing: 0.5px;
+}
+
+.single-product .product-btm .product-old-price {
+    font-size: 13px;
+    color: #95a5a6;
+    margin-left: 8px;
+    text-decoration: line-through;
+}
+
+/* 7. Thanh icon tương tác khi hover */
+.single-product .product-img .p_icon {
+    width: 80%;
+    padding: 6px 15px;
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(44, 62, 80, 0.75);
+    backdrop-filter: blur(4px);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+.single-product:hover .product-img .p_icon {
+    bottom: 12px !important;
+}
+
+.single-product .product-img .p_icon a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    width: 34px;
+    line-height: 34px;
+    background: #ffffff;
+    border-radius: 50%;
+    color: #333333;
+    margin: 0 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.single-product .product-img .p_icon a:hover {
+    background: #71cd14;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+/* 8. Badge nhãn giảm giá / nổi bật */
+.product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    z-index: 2;
+    letter-spacing: 0.5px;
+}
+
+.product-badge.sale-badge {
+    background: #e74c3c;
+    color: #ffffff;
+}
+
+.product-badge.hot-badge {
+    background: #f39c12;
+    color: #ffffff;
+}
+
+.product-badge.new-badge {
+    background: #71cd14;
+    color: #ffffff;
+}

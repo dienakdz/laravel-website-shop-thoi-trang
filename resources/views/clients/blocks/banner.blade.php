@@ -5,10 +5,10 @@
       <div class="container">
         <div class="banner_content row">
           <div class="col-lg-12">
-            <p class="sub text-uppercase">men Collection</p>
+            <p class="sub text-uppercase">Thời trang xu hướng mới</p>
             <h3><span>{!! $item->name_banner !!}</span></h3>
-            <h4>Fowl saw dry which a above together place.</h4>
-            <a class="main_btn mt-40" href="#">View Collection</a>
+            <h4>Tự tin thể hiện phong cách riêng với những mẫu thiết kế độc đáo.</h4>
+            <a class="main_btn mt-40" href="{{ route('product') }}">Khám phá ngay</a>
           </div>
         </div>
       </div>
