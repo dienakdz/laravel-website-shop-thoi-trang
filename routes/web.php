@@ -62,3 +62,5 @@ Route::prefix('admin')->group(function () {
     Route::post('/', [LoginAdminController::class, 'login'])->name('admin.login');
 });
 
+
+
