@@ -4,58 +4,54 @@ namespace App\Models\clients;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Checkout extends Model
 {
     use HasFactory;
 
-    //Lấy sản phẩm trong giỏ hàng của customer, và join vs table product để lấy các thông tin cần thiết
+    // Lấy sản phẩm trong giỏ hàng của customer (Status = 0: chưa đặt)
     public function productCheckOut($id_customer)
     {
-        DB::enableQueryLog();
-
-        $getProducts = DB::table('carts')
+        return DB::table('carts')
             ->join('product', 'product.ProductID', '=', 'carts.ProductID')
             ->where('CustomerID', $id_customer)
             ->where('carts.Status', 0)
+            ->select('carts.*', 'product.ProductName', 'product.Price', 'product.Picture', 'product.Quantity')
             ->get();
-
-        return $getProducts;
     }
-    //đặt hàng
+
+    // Đặt hàng và trả về OrderID vừa tạo
     public function addCheckout($data)
     {
-        return DB::table('orderproduct')->insert($data);
+        return DB::table('orderproduct')->insertGetId($data);
     }
-    //update trạng thái của các sản phẩm trong giỏ hàng từ 0(chưa được đặt hàng) lên thành 1(đã được đặt)
-    public function updateStatusCart($filters = [],$id_customer)
+
+    // Cập nhật trạng thái các sản phẩm trong giỏ hàng thành đã đặt (Status = 1)
+    public function updateStatusCart($filters = [], $id_customer)
     {
-        DB::enableQueryLog();
-        $updateStatus = DB::table('carts');
+        $query = DB::table('carts')->where('CustomerID', $id_customer);
 
         if (!empty($filters)) {
-            $updateStatus = $updateStatus->where($filters);
+            $query = $query->where($filters);
         }
 
-        $updateStatus = $updateStatus->where('CustomerID', $id_customer);
-        $updateStatus = $updateStatus->update(['Status' => 1]);
-        // dd(DB::getQueryLog());
-
-        return $updateStatus;
+        return $query->update(['Status' => 1]);
     }
-    //thêm dữ liệu vào orderdetail
+
+    // Thêm dữ liệu vào orderdetail
     public function addOrderDetail($data)
     {
         return DB::table('orderdetail')->insert($data);
     }
-    //Lấy ra OrderID của bảng orderproduct 
+
+    // Hàm dự phòng lấy OrderID mới nhất (giữ để tương thích)
     public function selectOderID()
     {
-        return DB::table('orderproduct')
-        ->orderByDesc('OrderDate')
-        ->limit(1)
-        ->select('OrderID')
-        ->first()->OrderID;
+        $order = DB::table('orderproduct')
+            ->orderByDesc('OrderID')
+            ->first();
+
+        return $order ? $order->OrderID : null;
     }
 }

@@ -8,55 +8,66 @@ use Illuminate\Http\Request;
 
 class InforController extends Controller
 {
-    private $infor_customer;
-    private $changePass;
+    private $inforModel;
 
     public function __construct()
     {
-        $this->infor_customer = new Infor();
-        $this->changePass = new Infor();
+        $this->inforModel = new Infor();
     }
+
     public function index()
     {
         $title = 'Thông tin cá nhân';
         $username = session('username');
-        $inforOld = $this->infor_customer->selectInforCustomer($username);
-        // dd($inforOld);
+        $inforOld = $this->inforModel->selectInforCustomer($username);
+
         return view('clients/infor', compact('title', 'inforOld'));
     }
 
     public function updateInfor(Request $request)
     {
+        $request->validate([
+            'fullname' => 'required',
+            'email' => 'required|email',
+            'sdt' => 'required',
+        ]);
+
         $updateInfor = [
             'Fullname' => $request->fullname,
-            'Gender' => $request->gender,
+            'Gender' => $request->gender ?? '',
             'Email' => $request->email,
-            'Address' => $request->address,
+            'Address' => $request->address ?? '',
             'Phonenumber' => $request->sdt
         ];
 
-        $this->infor_customer->updateInfor(session('username'), $updateInfor);
+        $this->inforModel->updateInfor(session('username'), $updateInfor);
         return redirect()->route('information')->with('msg', 'Cập nhật thông tin thành công!');
     }
 
     public function changePass(Request $request)
     {
+        $request->validate([
+            'oldpassword' => 'required',
+            'newpassword' => 'required|min:6',
+        ]);
+
         $username = session('username');
         $oldPass = md5($request->oldpassword);
         $newPass = md5($request->newpassword);
 
-        $password = $this->infor_customer->checkOldPass($username);
+        $password = $this->inforModel->checkOldPass($username);
 
         if ($oldPass == $password) {
-            $this->infor_customer->changePassword($username, $newPass);
+            $this->inforModel->changePassword($username, $newPass);
             return response()->json([
                 'success' => 'success',
+                'message' => 'Đổi mật khẩu thành công!'
             ]);
         } else {
             return response()->json([
                 'success' => 'error',
+                'message' => 'Mật khẩu hiện tại không chính xác!'
             ]);
         }
-
     }
 }

@@ -5,67 +5,62 @@ namespace App\Http\Controllers\Clients;
 use App\Http\Controllers\Controller;
 use App\Models\clients\Carts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartsController extends Controller
 {
+    private $cartModel;
 
-
-    private $getCarts;
-
-    private $addCart;
-
-    private $updateCart;
-    private $getCustomerID;
-
-    private $getProductCustomer;
-
-    private $updateQuantity;
-    private $deleteProduct;
     public function __construct()
     {
-        $this->getCarts = new Carts();
-        $this->addCart = new Carts();
-        $this->updateCart = new Carts();
-        $this->getCustomerID = new Carts();
-        $this->getProductCustomer = new Carts();
-        $this->updateQuantity = new Carts();
-        $this->deleteProduct = new Carts();
+        $this->cartModel = new Carts();
     }
+
     public function index()
     {
-        $title = 'Giỏ hàng';
-        $customerID = $this->getCustomerID->getCustomerID(session('username'));
-        $getAllCarts = $this->getCarts->getCarts($customerID);
+        $title = 'Giỏ hàng của bạn';
+        $customerID = $this->cartModel->getCustomerID(session('username'));
+
+        if (!$customerID) {
+            return redirect()->route('login')->with('msg_login', 'Vui lòng đăng nhập để xem giỏ hàng!');
+        }
+
+        $getAllCarts = $this->cartModel->getCarts($customerID);
         $totalPrice = 0;
+
         if ($getAllCarts) {
             foreach ($getAllCarts as $item) {
                 $totalPrice += $item->Price * $item->CartQuantity;
             }
         }
+
         return view('clients/carts', compact('title', 'getAllCarts', 'totalPrice'));
     }
 
     public function updateQuantity(Request $request)
     {
-        $customerID = $this->getCustomerID->getCustomerID(session('username'));
+        $customerID = $this->cartModel->getCustomerID(session('username'));
         $productID = $request->productID;
-        $qtycart =
-            [
-                'CartQuantity' => $request->qty
-            ];
+        $qty = max(1, (int)$request->qty);
 
-        $this->updateQuantity->updateQuantity($customerID, $productID, $qtycart);
+        // Kiểm tra tồn kho
+        $product = DB::table('product')->where('ProductID', $productID)->first();
+        if ($product && $qty > $product->Quantity) {
+            $qty = $product->Quantity;
+        }
+
+        $qtycart = ['CartQuantity' => $qty];
+        $this->cartModel->updateQuantity($customerID, $productID, $qtycart);
 
         // Tính tổng tiền 1 sản phẩm
-        $product_item = $this->getCarts->getItemProduct($customerID, $productID);
+        $product_item = $this->cartModel->getItemProduct($customerID, $productID);
         $totalProduct = 0;
         foreach ($product_item as $item) {
             $totalProduct += $item->Price * $item->CartQuantity;
         }
 
-        // Tính tổng tiền
-        $items = $this->getCarts->getCarts($customerID);
-        // dd($items);
+        // Tính tổng tiền giỏ hàng
+        $items = $this->cartModel->getCarts($customerID);
         $totalPrice = 0;
         foreach ($items as $item) {
             $totalPrice += $item->Price * $item->CartQuantity;
@@ -73,51 +68,58 @@ class CartsController extends Controller
 
         return response()->json([
             'totalPrice' => $totalPrice,
-            'totalProduct' => $totalProduct
+            'totalProduct' => $totalProduct,
+            'currentQty' => $qty
         ]);
     }
 
     public function addCart(Request $request, $productID = 0)
     {
-        $cart = [];
-        $customerID = $this->getCustomerID->getCustomerID(session('username'));
-        if (session('username')) {
-            //check sản phẩm đã có hay chưa
+        $customerID = $this->cartModel->getCustomerID(session('username'));
 
-            $check_product_customer = $this->getProductCustomer->getProductCustomer($customerID, $productID);
-
-            if (count($check_product_customer) > 0) {
-                $cartQuantity = $check_product_customer->first()->CartQuantity;
-                $cart =
-                    [
-                        'CartQuantity' => $request->cartquantity + $cartQuantity
-                    ];
-                $this->updateCart->updateCart($customerID, $productID, $cart);
-            } else {
-                $cart =
-                    [
-                        'CustomerID' => $customerID,
-                        'ProductID' => $productID,
-                        'CartQuantity' => $request->cartquantity,
-                        'Status' => 0
-                    ];
-
-                $this->addCart->addCart($cart);
-                // dd(count($check_product_customer));
-            }
-            return redirect()->route('carts');
-        } else {
-            echo '<script>alert("Vui lòng đăng nhập để mua sản phẩm!")</script>';
-            return redirect()->route('login');
+        if (!$customerID) {
+            return redirect()->route('login')->with('msg_login', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
         }
 
+        $requestQty = max(1, (int)($request->cartquantity ?? 1));
+
+        // Kiểm tra tồn kho của sản phẩm
+        $product = DB::table('product')->where('ProductID', $productID)->first();
+        if (!$product || $product->Quantity <= 0) {
+            return redirect()->back()->with('msg_error', 'Sản phẩm này hiện đang tạm hết hàng!');
+        }
+
+        // Kiểm tra sản phẩm đã có trong giỏ hàng chưa
+        $check_product_customer = $this->cartModel->getProductCustomer($customerID, $productID);
+
+        if (count($check_product_customer) > 0) {
+            $currentCartQty = $check_product_customer->first()->CartQuantity;
+            $newQty = min($product->Quantity, $currentCartQty + $requestQty);
+            $this->cartModel->updateCart($customerID, $productID, ['CartQuantity' => $newQty]);
+        } else {
+            $initialQty = min($product->Quantity, $requestQty);
+            $cartData = [
+                'CustomerID' => $customerID,
+                'ProductID' => $productID,
+                'CartQuantity' => $initialQty,
+                'Status' => 0
+            ];
+            $this->cartModel->addCart($cartData);
+        }
+
+        return redirect()->route('carts')->with('msg_success', 'Thêm vào giỏ hàng thành công!');
     }
 
     public function deleteProductCart($cartID = 0)
     {
-        $this->deleteProduct->deleteProductCart($cartID);
-        return response()->json(['success' => true]);
-        // return redirect()->route('carts');
-    }
+        $customerID = $this->cartModel->getCustomerID(session('username'));
 
+        // Bảo mật: chỉ cho xóa nếu sản phẩm trong giỏ thuộc về đúng khách hàng hiện tại
+        DB::table('carts')
+            ->where('CartID', $cartID)
+            ->where('CustomerID', $customerID)
+            ->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

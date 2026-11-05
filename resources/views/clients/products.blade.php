@@ -1,124 +1,203 @@
 @include('clients.blocks.header')
 @include('clients.banner')
+
 <!--================Category Product Area =================-->
-@if (session('msg'))
-    <script>
-        alert("Vui lòng thêm sản phẩm vào giỏ hàng!");
-    </script>
-@endif
-<section class="cat_product_area section_gap">
+<section class="cat_product_area section_gap py-5">
     <div class="container">
         <div class="row flex-row-reverse">
+            <!-- Khu vực danh sách sản phẩm -->
             <div class="col-lg-9">
-                <div class="product_top_bar">
+                <!-- Thanh công cụ sắp xếp & thông tin -->
+                <div class="product_top_bar p-3 mb-4 bg-white border rounded shadow-sm d-flex justify-content-between align-items-center">
                     <div class="left_dorp">
-                        <form action="" method="GET" id="sorting-form">
-                            <select class="sorting" name="sorting" id="sorting-select" onchange="this.form.submit()">
-                                <option value="0">Sắp xếp theo giá</option>
-                                <option value="asc" @if (isset($_GET['sorting']) && $_GET['sorting'] == 'asc') selected @endif>Thấp - Cao
-                                </option>
-                                <option value="desc" @if (isset($_GET['sorting']) && $_GET['sorting'] == 'desc') selected @endif>Cao - Thấp
-                                </option>
+                        <form action="" method="GET" id="sorting-form" class="form-inline m-0">
+                            @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+                            @if(request('brand')) <input type="hidden" name="brand" value="{{ request('brand') }}"> @endif
+                            @if(request('amount')) <input type="hidden" name="amount" value="{{ request('amount') }}"> @endif
+
+                            <label class="mr-2 text-muted small font-weight-bold mb-0">Sắp xếp:</label>
+                            <select class="form-control form-control-sm font-weight-bold" name="sorting" id="sorting-select" onchange="this.form.submit()">
+                                <option value="0">Mặc định (Ngẫu nhiên)</option>
+                                <option value="asc" @if (request('sorting') == 'asc') selected @endif>Giá: Thấp đến Cao</option>
+                                <option value="desc" @if (request('sorting') == 'desc') selected @endif>Giá: Cao đến Thấp</option>
                             </select>
                         </form>
                     </div>
+
+                    @if(request('category') || request('brand') || request('sorting') || request('amount'))
+                        <div>
+                            <a href="{{ route('product') }}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-times-circle mr-1"></i> Xóa bộ lọc
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
+                <!-- Lưới hiển thị sản phẩm -->
                 <div class="latest_product_inner">
                     <div class="row">
                         @forelse ($itemSearch ?? $productList as $item)
-                            <div class="col-lg-4 col-md-6">
-                                <div class="single-product">
+                            <div class="col-lg-4 col-md-6 mb-4 d-flex">
+                                <div class="single-product w-100">
                                     <div class="product-img">
-                                        <img class="card-img"
+                                        @if(isset($item->ProductStatusID))
+                                            @if($item->ProductStatusID == 2)
+                                                <span class="product-badge hot-badge"><i class="fa fa-fire"></i> Hot</span>
+                                            @elseif($item->ProductStatusID == 1)
+                                                <span class="product-badge new-badge">Mới</span>
+                                            @elseif($item->ProductStatusID == 3)
+                                                <span class="product-badge sale-badge">Giảm giá</span>
+                                            @endif
+                                        @endif
+                                        <img class="img-fluid"
                                             src="{{ asset('assets/admin/img/upload/' . $item->Picture) }}"
                                             alt="{{ $item->ProductName }}" />
                                         <div class="p_icon">
-                                            <a href="#"><i class="ti-eye"></i></a>
-                                            <a href="#"><i class="ti-heart"></i></a>
-                                            <a href="#"><i class="ti-shopping-cart"></i></a>
+                                            <a href="{{ route('detail-product', ['id' => $item->ProductID]) }}" title="Xem chi tiết">
+                                                <i class="ti-eye"></i>
+                                            </a>
+                                            <a href="{{ route('detail-product', ['id' => $item->ProductID]) }}" title="Xem mua hàng">
+                                                <i class="ti-shopping-cart"></i>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="product-btm">
-                                        <a href="{{ route('detail-product', ['id' => $item->ProductID]) }}"
-                                            class="d-block">
-                                            <h4>{{ $item->ProductName }}</h4>
+                                        <a href="{{ route('detail-product', ['id' => $item->ProductID]) }}" class="d-block">
+                                            <h4 title="{{ $item->ProductName }}">{{ $item->ProductName }}</h4>
                                         </a>
-                                        <div class="mt-3">
-                                            <span class="mr-4">{{ number_format($item->Price) }}đ</span>
+                                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                                            <span class="product-price">{{ number_format($item->Price, 0, ',', '.') }}đ</span>
+                                            @if($item->Quantity > 0)
+                                                <small class="text-success"><i class="fa fa-check-circle"></i> Còn hàng</small>
+                                            @else
+                                                <small class="text-danger"><i class="fa fa-times-circle"></i> Hết hàng</small>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @empty
-                            <p>KHÔNG CÓ DỮ LIỆU TÌM KIẾM CHO DANH MỤC VÀ THƯƠNG HIỆU NÀY!</p>
+                            <div class="col-12 text-center py-5">
+                                <i class="ti-package text-muted mb-3" style="font-size: 48px; display: block;"></i>
+                                <h5 class="text-muted font-weight-bold">Không tìm thấy sản phẩm nào phù hợp!</h5>
+                                <p class="text-muted small">Hãy thử chọn danh mục khác hoặc xóa bộ lọc để xem toàn bộ sản phẩm.</p>
+                                <a href="{{ route('product') }}" class="btn btn-success btn-sm mt-2">Xem tất cả sản phẩm</a>
+                            </div>
                         @endforelse
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 20px;margin-bottom: 20px;">
+
+                <!-- Phân trang -->
+                <div class="d-flex justify-content-center my-4">
                     @if (!empty($itemSearch))
-                        {{ $itemSearch->links() }}
+                        {{ $itemSearch->withQueryString()->links() }}
                     @else
-                        {{ $productList->links() }}
+                        {{ $productList->withQueryString()->links() }}
                     @endif
                 </div>
             </div>
 
+            <!-- Sidebar bộ lọc bên trái -->
             <div class="col-lg-3">
                 <div class="left_sidebar_area">
-                    <aside class="left_widgets p_filter_widgets">
-                        <div class="l_w_title">
-                            <h3>Danh sách danh mục</h3>
+                    <!-- Lọc theo danh mục -->
+                    <aside class="left_widgets p_filter_widgets mb-4 bg-white border rounded shadow-sm p-3">
+                        <div class="l_w_title border-bottom pb-2 mb-3">
+                            <h5 class="font-weight-bold m-0" style="color: #2c3e50;">Danh mục sản phẩm</h5>
                         </div>
                         <div class="widgets_inner">
-                            <form action="" method="GET" id="category-form">
+                            <ul class="list-unstyled m-0">
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['category', 'page']))) }}"
+                                       class="d-flex justify-content-between align-items-center {{ !request('category') ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <span><i class="fa fa-angle-right mr-2"></i> Tất cả danh mục</span>
+                                    </a>
+                                </li>
                                 @if (!empty(getAllCategories()))
                                     @foreach (getAllCategories() as $item)
-                                        <input type="radio" name="category" value="{{ $item->CategoryID }}"
-                                            id="{{ $item->CategoryName }}"
-                                            @if (isset($_GET['category']) && $_GET['category'] == $item->CategoryID) checked @endif>
-                                        <label for="{{ $item->CategoryName }}">{{ $item->CategoryName }}</label>
-                                        <br>
+                                        <li class="mb-2">
+                                            <a href="{{ route('product', array_merge(request()->except(['category', 'page']), ['category' => $item->CategoryID])) }}"
+                                               class="d-flex justify-content-between align-items-center {{ request('category') == $item->CategoryID ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                                <span><i class="fa fa-angle-right mr-2"></i> {{ $item->CategoryName }}</span>
+                                                @if(request('category') == $item->CategoryID)
+                                                    <i class="fa fa-check text-success small"></i>
+                                                @endif
+                                            </a>
+                                        </li>
                                     @endforeach
                                 @endif
-                            </form>
+                            </ul>
                         </div>
                     </aside>
 
-                    <aside class="left_widgets p_filter_widgets">
-                        <div class="l_w_title">
-                            <h3>Danh sách thương hiệu</h3>
+                    <!-- Lọc theo thương hiệu -->
+                    <aside class="left_widgets p_filter_widgets mb-4 bg-white border rounded shadow-sm p-3">
+                        <div class="l_w_title border-bottom pb-2 mb-3">
+                            <h5 class="font-weight-bold m-0" style="color: #2c3e50;">Thương hiệu</h5>
                         </div>
                         <div class="widgets_inner">
-                            <form action="" method="GET" id="brand-form">
+                            <ul class="list-unstyled m-0">
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['brand', 'page']))) }}"
+                                       class="d-flex justify-content-between align-items-center {{ !request('brand') ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <span><i class="fa fa-angle-right mr-2"></i> Tất cả thương hiệu</span>
+                                    </a>
+                                </li>
                                 @if (!empty(getAllBrands()))
                                     @foreach (getAllBrands() as $item)
-                                        <input type="radio" name="brand" value="{{ $item->BrandID }}"
-                                            id="{{ $item->BrandName }}"
-                                            @if (isset($_GET['brand']) && $_GET['brand'] == $item->BrandID) checked @endif>
-                                        <label for="{{ $item->BrandName }}">{{ $item->BrandName }}</label>
-                                        <br>
+                                        <li class="mb-2">
+                                            <a href="{{ route('product', array_merge(request()->except(['brand', 'page']), ['brand' => $item->BrandID])) }}"
+                                               class="d-flex justify-content-between align-items-center {{ request('brand') == $item->BrandID ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                                <span><i class="fa fa-angle-right mr-2"></i> {{ $item->BrandName }}</span>
+                                                @if(request('brand') == $item->BrandID)
+                                                    <i class="fa fa-check text-success small"></i>
+                                                @endif
+                                            </a>
+                                        </li>
                                     @endforeach
                                 @endif
-                            </form>
+                            </ul>
                         </div>
                     </aside>
 
-                    <aside class="left_widgets p_filter_widgets">
-                        <div class="l_w_title">
-                            <h3>Price Filter</h3>
+                    <!-- Lọc theo khoảng giá -->
+                    <aside class="left_widgets p_filter_widgets mb-4 bg-white border rounded shadow-sm p-3">
+                        <div class="l_w_title border-bottom pb-2 mb-3">
+                            <h5 class="font-weight-bold m-0" style="color: #2c3e50;">Lọc theo giá</h5>
                         </div>
                         <div class="widgets_inner">
-                            <div class="range_item">
-                                <div id="slider-range"></div>
-                                <div class="">
-                                    <form action="" method="GET" id="filter-form">
-                                        <label for="amount">Price : </label>
-                                        <input type="text" id="amount" name="amount" readonly />
-                                        <input type="submit" value="LỌC" />
-                                    </form>
-                                </div>
-                            </div>
+                            <ul class="list-unstyled m-0">
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['amount', 'page']))) }}"
+                                       class="{{ !request('amount') ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <i class="fa fa-circle-o mr-2"></i> Tất cả mức giá
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['amount', 'page']), ['amount' => '0 - 150.000'])) }}"
+                                       class="{{ request('amount') == '0 - 150.000' ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <i class="fa fa-circle-o mr-2"></i> Dưới 150.000đ
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['amount', 'page']), ['amount' => '150.000 - 300.000'])) }}"
+                                       class="{{ request('amount') == '150.000 - 300.000' ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <i class="fa fa-circle-o mr-2"></i> 150.000đ - 300.000đ
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['amount', 'page']), ['amount' => '300.000 - 600.000'])) }}"
+                                       class="{{ request('amount') == '300.000 - 600.000' ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <i class="fa fa-circle-o mr-2"></i> 300.000đ - 600.000đ
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a href="{{ route('product', array_merge(request()->except(['amount', 'page']), ['amount' => '600.000 - 2.000.000'])) }}"
+                                       class="{{ request('amount') == '600.000 - 2.000.000' ? 'text-success font-weight-bold' : 'text-dark' }}">
+                                        <i class="fa fa-circle-o mr-2"></i> Trên 600.000đ
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </aside>
                 </div>
@@ -126,86 +205,6 @@
         </div>
     </div>
 </section>
-
 <!--================End Category Product Area =================-->
+
 @include('clients.blocks.footer')
-<script src="http://127.0.0.1:8000/assets/clients/js/slider-range.js"></script>
-<script>
-    const categoryRadioButtons = document.querySelectorAll('input[name="category"]');
-    categoryRadioButtons.forEach(radio => {
-        radio.addEventListener('click', () => {
-            document.getElementById('category-form').submit(); // Submit category form only
-        });
-    });
-
-    const brandRadioButtons = document.querySelectorAll('input[name="brand"]');
-    brandRadioButtons.forEach(radio => {
-        radio.addEventListener('click', () => {
-            document.getElementById('brand-form').submit(); // Submit brand form only
-        });
-    });
-
-
-    //Xử lý khi kết hợp nhiều chuỗi để lọc
-    const categoryForm = document.getElementById("category-form");
-    const brandForm = document.getElementById("brand-form");
-    const filterForm = document.getElementById("filter-form");
-    const filterButton = filterForm.querySelector('input[type="submit"]');
-
-    const sortingForm = document.getElementById('sorting-form');
-    const sortingSelect = document.getElementById('sorting-select');
-
-
-    let isFiltering = false;
-
-    // Gán sự kiện click cho nút "LỌC"
-    filterButton.addEventListener("click", function(event) {
-        event.preventDefault(); // Ngăn chặn form submit mặc định
-        isFiltering = true; // Đặt cờ hiệu để biết rằng đang thực hiện lọc
-        updateQueryParams(); // Gọi hàm để cập nhật các tham số truy vấn
-    });
-
-    // Gán sự kiện click cho form "Danh mục sản phẩm"
-    categoryForm.addEventListener("click", updateQueryParams);
-
-    // Gán sự kiện click cho form "Thương hiệu sản phẩm"
-    brandForm.addEventListener("click", updateQueryParams);
-
-    // Gán sự kiện change cho form "Sắp xếp sản phẩm theo giá"
-    sortingSelect.addEventListener("change", updateQueryParams);
-    // Hàm cập nhật các tham số truy vấn
-    function updateQueryParams() {
-        let queryParams = [];
-        const categoryChecked = categoryForm.querySelector('input[name="category"]:checked');
-        const brandChecked = brandForm.querySelector('input[name="brand"]:checked');
-        const amountInput = filterForm.querySelector('input[name="amount"]');
-
-        // Thêm tham số truy vấn "category" vào mảng queryParams nếu đã chọn danh mục sản phẩm
-        if (categoryChecked) {
-            queryParams.push(`category=${categoryChecked.value}`);
-        }
-
-        // Thêm tham số truy vấn "brand" vào mảng queryParams nếu đã chọn thương hiệu sản phẩm
-        if (brandChecked) {
-            queryParams.push(`brand=${brandChecked.value}`);
-        }
-
-        //Thêm tham số truy vấn "sorting" vào mảng queryParams nếu đã chọn sắp xếp
-        const selectedOption = sortingSelect.options[sortingSelect.selectedIndex];
-        const sortingValue = selectedOption.value;
-        if (sortingValue !== "0") {
-            queryParams.push(`sorting=${sortingValue}`);
-        }
-
-        // Nếu đang thực hiện lọc và đã nhập giá tiền, thêm tham số truy vấn "amount" vào mảng queryParams
-        if (isFiltering && amountInput) {
-            queryParams.push(`amount=${amountInput.value}`);
-        }
-
-        // Tạo url mới với các tham số truy vấn được cập nhật
-        const url = `/san-pham?${queryParams.join("&")}`;
-
-        // Chuyển hướng trình duyệt đến url mới
-        window.location.href = url;
-    }
-</script>

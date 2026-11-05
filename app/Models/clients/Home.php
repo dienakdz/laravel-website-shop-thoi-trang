@@ -4,15 +4,21 @@ namespace App\Models\clients;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Home extends Model
 {
     use HasFactory;
 
-    public function  getHomeProduct($danhmuc, $a,$b)
+    protected $table = 'product';
+
+    public function getHomeProduct($statusId, $offset = 0, $limit = 8)
     {
-        $homeProduct = DB::select("SELECT * FROM product WHERE ProductStatusID = $danhmuc ORDER BY UpdateDate DESC LIMIT $a, $b");
-        return $homeProduct;
+        return DB::table('product')
+            ->where('ProductStatusID', $statusId)
+            ->orderByDesc('UpdateDate')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
     }
 }

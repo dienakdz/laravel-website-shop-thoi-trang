@@ -8,52 +8,54 @@ use App\Models\clients\Products;
 
 class DetailProductController extends Controller
 {
-    private $getDetailProduct;
+    private $productModel;
 
-    private $getRatingProduct;
-
-    private $getAverageRating;
-
-    private $getCountRating;
-
-    private $postRating;
     public function __construct()
     {
-        $this->getDetailProduct = new Products();
-        $this->getRatingProduct = new Products();
-        $this->getAverageRating = new Products();
-        $this->getCountRating = new Products();
-        $this->postRating = new Products();
+        $this->productModel = new Products();
     }
+
     public function index($id = 0)
     {
-        $title = 'Chi tiết sản phẩm';
-        $detailProduct = $this->getDetailProduct->getDetailProduct($id);
+        $detailProduct = $this->productModel->getDetailProduct($id);
 
-        $ratingProduct = $this->getRatingProduct->getRatingProduct($id);
+        if (!$detailProduct) {
+            abort(404, 'Sản phẩm không tồn tại');
+        }
 
-        $averageRating = $this->getAverageRating->getAverageRating($id);
-        $countRating = $this->getCountRating->getCountRating($id);
-        // dd($ratingProduct);
+        $title = $detailProduct->ProductName;
+        $ratingProduct = $this->productModel->getRatingProduct($id);
+        $averageRating = round($this->productModel->getAverageRating($id) ?? 5, 1);
+        $countRating = $this->productModel->getCountRating($id) ?? 0;
 
-        return view('clients/detail-product',compact('title', 'detailProduct','ratingProduct','averageRating','countRating'));
+        return view('clients/detail-product', compact('title', 'detailProduct', 'ratingProduct', 'averageRating', 'countRating'));
     }
+
     public function postRating(Request $request, $id)
     {
+        $request->validate([
+            'comment' => 'required',
+            'name' => 'required',
+            'ratingstar' => 'required|numeric|min:1|max:5',
+        ]);
+
         $dataInsert = [
             'RatingComment' => $request->comment,
             'RatingName' => $request->name,
-            'RatingEmail' => $request->email,
+            'RatingEmail' => $request->email ?? '',
             'RatingStar' => $request->ratingstar,
-            'ProductID' => $id
-
+            'ProductID' => $id,
         ];
-        // dd($dataInsert);
-        $this->postRating->postRating($dataInsert);
-        return redirect()->route('detail-product',['id' => $id] );
+
+        $this->productModel->postRating($dataInsert);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đánh giá sản phẩm thành công!'
+            ]);
+        }
+
+        return redirect()->route('detail-product', ['id' => $id])->with('msg_rating', 'Đánh giá thành công!');
     }
-
-    
 }
-
-
