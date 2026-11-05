@@ -846,3 +846,280 @@
     color: #ffffff;
     transform: translateY(-3px);
 }
+
+
+/* ============================================================
+   TRANG ĐƠN MUA HÀNG (EISER AUTHENTIC THEME STYLE)
+   ============================================================ */
+.order_history_area {
+    padding: 60px 0 100px;
+    background: #ffffff;
+}
+
+/* Tabs lọc đơn hàng chuẩn phong cách Eiser */
+.order_nav_tabs {
+    display: flex;
+    border-bottom: 2px solid #eeeeee;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style: none;
+}
+
+.order_nav_tabs .nav_item {
+    margin-bottom: -2px;
+}
+
+.order_nav_tabs .nav_link {
+    display: block;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #797979;
+    text-decoration: none !important;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.order_nav_tabs .nav_link:hover {
+    color: #2a2a2a;
+}
+
+.order_nav_tabs .nav_link.active {
+    color: #71cd14;
+    border-bottom-color: #71cd14;
+}
+
+.order_nav_tabs .nav_link .count {
+    font-size: 12px;
+    color: #999999;
+    margin-left: 4px;
+}
+
+.order_nav_tabs .nav_link.active .count {
+    color: #71cd14;
+    font-weight: 700;
+}
+
+/* Khối từng đơn hàng (Order Block) */
+.order_block {
+    border: 1px solid #eeeeee;
+    margin-bottom: 30px;
+    background: #ffffff;
+}
+
+/* Header đơn hàng */
+.order_block_header {
+    background: #f9f9f9;
+    border-bottom: 1px solid #eeeeee;
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.order_block_header .order_id {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2a2a2a;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.order_block_header .order_date {
+    font-size: 13px;
+    color: #797979;
+    margin-left: 15px;
+    font-weight: normal;
+    text-transform: none;
+}
+
+.order_status_tag {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order_status_tag.st-1 { color: #d97706; } /* Chờ xác nhận */
+.order_status_tag.st-2 { color: #2563eb; } /* Đang chuẩn bị */
+.order_status_tag.st-3 { color: #7c3aed; } /* Đang vận chuyển */
+.order_status_tag.st-4 { color: #71cd14; } /* Hoàn thành */
+.order_status_tag.st-0 { color: #9ca3af; } /* Đã hủy */
+
+/* Bảng sản phẩm trong đơn */
+.order_items_table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.order_items_table td {
+    padding: 18px 22px;
+    vertical-align: middle;
+    border-top: 1px solid #f6f6f6;
+}
+
+.order_items_table tr:first-child td {
+    border-top: none;
+}
+
+.order_product_thumb {
+    width: 65px;
+    height: 65px;
+    border: 1px solid #eeeeee;
+    padding: 2px;
+    object-fit: contain;
+    background: #fff;
+    margin-right: 18px;
+    border-radius: 2px;
+}
+
+.order_product_title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2a2a2a;
+    text-decoration: none !important;
+    line-height: 1.4;
+    display: inline-block;
+}
+
+.order_product_title:hover {
+    color: #71cd14;
+}
+
+.order_product_meta {
+    font-size: 13px;
+    color: #797979;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.order_item_subtotal {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a2a2a;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Footer đơn hàng: Thông tin giao & Tổng tiền & Nút */
+.order_block_footer {
+    background: #fafafa;
+    border-top: 1px solid #eeeeee;
+    padding: 16px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.order_delivery_info {
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.6;
+    max-width: 550px;
+}
+
+.order_delivery_info p {
+    margin-bottom: 2px;
+}
+
+.order_delivery_info strong {
+    color: #2a2a2a;
+}
+
+.order_footer_right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.order_final_price {
+    font-size: 13px;
+    color: #797979;
+    text-transform: uppercase;
+}
+
+.order_final_price strong {
+    font-size: 17px;
+    color: #2a2a2a;
+    margin-left: 6px;
+    font-weight: 700;
+}
+
+/* Các nút bấm chuẩn theme Eiser */
+.order_btn_primary {
+    background: #71cd14;
+    color: #ffffff !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 22px;
+    height: 38px;
+    line-height: 38px;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-decoration: none !important;
+}
+
+.order_btn_primary:hover {
+    background: #5ea810;
+}
+
+.order_btn_secondary {
+    background: #ffffff;
+    color: #666666 !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 20px;
+    height: 38px;
+    line-height: 36px;
+    border: 1px solid #d5d5d5;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-decoration: none !important;
+}
+
+.order_btn_secondary:hover {
+    background: #f5f5f5;
+    color: #2a2a2a !important;
+    border-color: #bbbbbb;
+}
+
+/* Empty Box */
+.order_empty_box {
+    padding: 70px 20px;
+    border: 1px solid #eeeeee;
+    background: #ffffff;
+    margin: 20px 0;
+}
+
+.order_empty_box h4 {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #2a2a2a;
+    margin-bottom: 10px;
+}
+
+.order_empty_box p {
+    font-size: 14px;
+    color: #797979;
+    margin-bottom: 25px;
+}

@@ -55,6 +55,7 @@ Route::middleware('client.auth')->group(function () {
     // Quản lý đơn mua
     Route::get('/don-mua', [OrderedController::class, 'index'])->name('ordered');
     Route::post('/don-mua/{id?}', [OrderedController::class, 'updateStatus'])->name('update-status');
+    Route::post('/huy-don-mua/{id?}', [OrderedController::class, 'cancelOrder'])->name('cancel-order');
 
     // Thông tin cá nhân & đổi mật khẩu
     Route::get('/thong-tin-ca-nhan', [InforController::class, 'index'])->name('information');

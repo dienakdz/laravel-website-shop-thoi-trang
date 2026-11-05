@@ -4,33 +4,44 @@ namespace App\Models\clients;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
+
 class Ordered extends Model
 {
     use HasFactory;
-    //Lấy ra danh sách các đơn hàng đã đặt của customer
+
+    // Lấy ra danh sách các đơn hàng đã đặt của customer (đơn mới nhất lên đầu)
     public function getAllOrdered($id_customer)
     {
-
         return DB::table('orderproduct')
-        ->where('CustomerID', $id_customer)
-        ->get();
+            ->where('CustomerID', $id_customer)
+            ->orderBy('OrderID', 'desc')
+            ->get();
     }
 
+    // Lấy chi tiết các sản phẩm trong đơn hàng
     public function getOrderedDetail($id)
     {
-
-        return DB::table('orderproduct')
-        ->join('orderdetail','orderproduct.OrderID' ,'=', 'orderdetail.OrderID')
-        ->join('product', 'orderdetail.ProductID' ,'=', 'product.ProductID' )
-        ->where('orderproduct.OrderID', $id)
-        ->get();
+        return DB::table('orderdetail')
+            ->join('product', 'orderdetail.ProductID', '=', 'product.ProductID')
+            ->where('orderdetail.OrderID', $id)
+            ->select('orderdetail.*', 'product.ProductName', 'product.Picture')
+            ->get();
     }
-    //update trạng thái khi người dùng ấn đã nhận được hàng(status =4),status =3 khi đang giao đến, status = 2 là đang đợi xác nhận, còn =1 là đặt hàng thành công
+
+    // Khách hàng xác nhận đã nhận hàng (Status = 4)
     public function updateStatus($id)
     {
         return DB::table('orderproduct')
-        ->where('OrderID', $id)
-        ->update(['Status' => 4]);
+            ->where('OrderID', $id)
+            ->update(['Status' => 4]);
+    }
+
+    // Khách hàng hủy đơn hàng (Status = 0)
+    public function cancelOrder($id)
+    {
+        return DB::table('orderproduct')
+            ->where('OrderID', $id)
+            ->update(['Status' => 0]);
     }
 }
