@@ -78,7 +78,7 @@
                     <div class="collapse navbar-collapse offset w-100" id="navbarSupportedContent">
                         <div class="row w-100 mr-0">
                             <div class="col-lg-7 pr-0">
-                                <ul class="nav navbar-nav center_nav pull-right">
+                                <ul class="nav navbar-nav center_nav ml-3">
                                     <li class="nav-item {{ Request::routeIs('home') ? 'active' : '' }}">
                                         <a class="nav-link" href="{{ route('home') }}">Trang chủ</a>
                                     </li>
@@ -114,14 +114,26 @@
                             <div class="col-lg-5 pr-0">
                                 <ul class="nav navbar-nav navbar-right right_nav pull-right">
                                     <!-- Thanh tìm kiếm -->
-                                    <li class="nav-item">
-                                        <form class="icons" action="{{ route('search') }}" method="GET">
-                                            <i class="ti-search new-search-icon" aria-hidden="true"></i>
-                                            <i class="ti-search search-icon" aria-hidden="true"></i>
-                                            <input type="text" name="search" class="input-search" placeholder="Tìm sản phẩm..." value="{{ request('search') }}">
-                                            <i class="ti-close close-icon" aria-hidden="true"></i>
-                                            <i class="fa fa-microphone voice-search-icon" aria-hidden="true"></i>
-                                        </form>
+                                    <li class="nav-item search-nav-item {{ request('open_search') ? 'search-open' : '' }}">
+                                        <a href="javascript:void(0)" class="icons search-trigger-btn" id="searchTriggerBtn" title="Tìm kiếm">
+                                            <i class="ti-search"></i>
+                                        </a>
+
+                                        <div class="header-search-box" id="headerSearchBox">
+                                            <form class="header-search-form" id="headerSearchForm" action="{{ route('search') }}" method="GET">
+                                                <button type="submit" class="search-btn-icon search-submit-btn" title="Tìm kiếm">
+                                                    <i class="ti-search"></i>
+                                                </button>
+                                                <input type="text" name="search" class="header-search-input" id="headerSearchInput"
+                                                    placeholder="Tìm sản phẩm..." value="{{ request('search') }}" autocomplete="off">
+                                                <button type="button" class="search-btn-icon search-voice-btn" id="voiceSearchBtn" title="Tìm bằng giọng nói">
+                                                    <i class="fa fa-microphone"></i>
+                                                </button>
+                                                <button type="button" class="search-btn-icon search-close-btn" id="closeSearchBtn" title="Đóng tìm kiếm">
+                                                    <i class="ti-close"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </li>
 
                                     <!-- Giỏ hàng -->

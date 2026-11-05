@@ -48,64 +48,190 @@
     color: #868080;
 }
 
-.input-search {
+/* ============================================================
+   HEADER SEARCH BAR CHUẨN HIỆN ĐẠI (KHÔNG LỆCH / VỠ LAYOUT)
+   ============================================================ */
+.header_area .navbar .right_nav {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+}
+
+.header_area .navbar .search-nav-item {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 80px !important;
+    margin: 0 !important;
+}
+
+.search-trigger-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 1 !important;
+    margin-left: 15px !important;
+    color: #4a4a4a !important;
+    font-size: 16px !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+}
+
+.search-trigger-btn:hover {
+    color: #71cd14 !important;
+    background: #f1f5f9 !important;
+}
+
+/* Khung tìm kiếm nổi (Floating Popover) */
+.header-search-box {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) scale(0.95);
+    transform-origin: right center;
+    width: 285px;
+    background: #ffffff;
+    border-radius: 30px;
+    border: 1.5px solid #71cd14;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    padding: 3px 6px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+}
+
+.search-nav-item.search-open .header-search-box {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+
+.search-nav-item.search-open .search-trigger-btn {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.header-search-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header-search-input {
+    flex: 1;
+    height: 34px;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent;
+    padding: 0 10px;
+    font-size: 13px;
+    color: #2c3e50;
+    min-width: 0;
+}
+
+.header-search-input::placeholder {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.search-btn-icon {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
     width: 30px;
     height: 30px;
-    padding-left: 30px;
-    font-size: 13px;
-    visibility: hidden;
-}
-
-.ti-search {
-    position: relative;
-    right: -25px;
-    z-index: 2;
-}
-
-.new-search-icon {
-    position: relative;
-    right: -50px;
-    z-index: 2;
-    visibility: hidden;
+    min-width: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     cursor: pointer;
+    color: #64748b;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0 1px;
 }
 
-.close-icon {
-    position: relative;
-    left: -20px;
-    z-index: 2;
-    visibility: hidden;
-    cursor: pointer;
+.search-btn-icon:hover {
+    color: #71cd14;
+    background: #f1f5f9;
 }
 
-.voice-search-icon {
-    position: relative;
-    left: -55px;
-    z-index: 2;
-    visibility: hidden;
-    cursor: pointer;
+.search-btn-icon:focus {
+    outline: none;
 }
 
-.search-open .input-search {
-    width: 200px;
-    transition: width 0.5s ease-in-out;
-    visibility: visible;
+.search-submit-btn {
+    color: #71cd14;
+    font-weight: 600;
 }
 
-.search-open .ti-search {
-    visibility: hidden;
+.search-submit-btn:hover {
+    color: #5aa710;
+    background: #eef9e5;
 }
 
-.search-open .new-search-icon {
-    visibility: visible;
+.search-voice-btn.listening {
+    color: #ef4444 !important;
+    background: #fee2e2 !important;
+    animation: pulse-voice 1.2s infinite ease-in-out;
 }
 
-.search-open .close-icon {
-    visibility: visible;
+@keyframes pulse-voice {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1); }
 }
 
-.search-open .voice-search-icon {
-    visibility: visible;
+.search-close-btn:hover {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+@media (max-width: 991px) {
+    .header_area .navbar .right_nav {
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+    }
+
+    .header_area .navbar .search-nav-item {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 12px 0 8px !important;
+    }
+
+    .search-trigger-btn {
+        display: none !important;
+    }
+
+    .header-search-box {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        box-shadow: none !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    .search-close-btn {
+        display: none !important;
+    }
 }
 
 /* Trang gioi thieu */

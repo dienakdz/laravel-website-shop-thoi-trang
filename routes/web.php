@@ -68,3 +68,4 @@ Route::prefix('admin')->group(function () {
     Route::get('/', [LoginAdminController::class, 'index'])->name('admin.login');
     Route::post('/', [LoginAdminController::class, 'login'])->name('admin.login');
 });
+
