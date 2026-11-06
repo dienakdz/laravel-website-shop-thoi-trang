@@ -1,27 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\clients;
+namespace App\Http\Controllers\Clients;
 
 use App\Http\Controllers\Controller;
-use App\Models\clients\Infor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InforController extends Controller
 {
-    private $inforModel;
-
-    public function __construct()
-    {
-        $this->inforModel = new Infor();
-    }
-
     public function index()
     {
         $title = 'Thông tin cá nhân';
         $username = session('username');
-        $inforOld = $this->inforModel->selectInforCustomer($username);
 
-        return view('clients/infor', compact('title', 'inforOld'));
+        $customer = DB::table('customer')->where('Username', $username)->first();
+
+        if (!$customer) {
+            $customer = (object)[
+                'Fullname' => $username,
+                'Gender' => 'male',
+                'Email' => '',
+                'Address' => '',
+                'Phonenumber' => ''
+            ];
+        }
+
+        return view('clients/infor', compact('title', 'customer'));
     }
 
     public function updateInfor(Request $request)
@@ -32,15 +36,18 @@ class InforController extends Controller
             'sdt' => 'required',
         ]);
 
+        $username = session('username');
+
         $updateInfor = [
             'Fullname' => $request->fullname,
-            'Gender' => $request->gender ?? '',
+            'Gender' => $request->gender ?? 'male',
             'Email' => $request->email,
             'Address' => $request->address ?? '',
             'Phonenumber' => $request->sdt
         ];
 
-        $this->inforModel->updateInfor(session('username'), $updateInfor);
+        DB::table('customer')->where('Username', $username)->update($updateInfor);
+
         return redirect()->route('information')->with('msg', 'Cập nhật thông tin thành công!');
     }
 
@@ -55,10 +62,10 @@ class InforController extends Controller
         $oldPass = md5($request->oldpassword);
         $newPass = md5($request->newpassword);
 
-        $password = $this->inforModel->checkOldPass($username);
+        $customer = DB::table('customer')->where('Username', $username)->first();
 
-        if ($oldPass == $password) {
-            $this->inforModel->changePassword($username, $newPass);
+        if ($customer && $customer->Password === $oldPass) {
+            DB::table('customer')->where('Username', $username)->update(['Password' => $newPass]);
             return response()->json([
                 'success' => 'success',
                 'message' => 'Đổi mật khẩu thành công!'

@@ -113,7 +113,7 @@
                         }, 1200);
                     } else {
                         $('#message').hide();
-                        $('#error').text('Tên tài khoản đã tồn tại!').show();
+                        $('#error').text(response.message || 'Tên tài khoản đã tồn tại!').show();
                     }
                 },
                 error: function() {
