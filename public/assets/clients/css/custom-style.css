@@ -317,20 +317,11 @@
     cursor: pointer;
 }
 
+/* ============================================================
+   THÔNG TIN CÁ NHÂN & ĐỔI MẬT KHẨU
+   ============================================================ */
 .form-infor {
-    text-align: center;
-}
-
-.form-infor button {
-    margin-top: 5%;
-}
-
-.form-infor button:hover {
-    background-color: rgb(11, 122, 11);
-    color: white;
-    text-align: center;
-    align-items: center;
-    margin-top: 5%;
+    text-align: left;
 }
 
 /* ============================================================

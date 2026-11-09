@@ -6,76 +6,80 @@
         <div class="row">
             <!-- Cột trái: Cập nhật thông tin cá nhân -->
             <div class="col-lg-7 col-md-7 mb-4 mb-md-0">
-                <h3 class="mb-4 title_color font-weight-bold" style="font-size: 20px; color: #2a2a2a;">
-                    <i class="ti-user mr-2 text-success"></i> Thông tin cá nhân
-                </h3>
+                <div class="p-4 bg-white" style="border: 1px solid #ebebeb; border-radius: 4px;">
+                    <h3 class="mb-4 title_color font-weight-bold" style="font-size: 18px; color: #2a2a2a;">
+                        <i class="ti-user mr-2 text-success"></i> Thông tin cá nhân
+                    </h3>
 
-                @if (session('msg'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fa fa-check-circle mr-2"></i> {{ session('msg') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
+                    @if (session('msg'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle mr-2"></i> {{ session('msg') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
 
-                @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <ul class="mb-0 pl-3">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <ul class="mb-0 pl-3">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
 
-                <form action="{{ route('update-infor') }}" method="POST" class="form-infor" id="form-infor">
-                    @csrf
-                    <div class="form-group mb-3">
-                        <label for="fullname" class="font-weight-bold text-muted small">Họ và tên *</label>
-                        <input type="text" name="fullname" id="fullname" placeholder="Nhập họ và tên..."
-                            class="form-control" value="{{ old('fullname', $customer->Fullname ?? '') }}" required>
-                    </div>
+                    <form action="{{ route('update-infor') }}" method="POST" id="form-infor">
+                        @csrf
+                        <div class="form-group mb-3 text-left">
+                            <label for="fullname" class="font-weight-bold text-muted small d-block">Họ và tên *</label>
+                            <input type="text" name="fullname" id="fullname" placeholder="Nhập họ và tên..."
+                                class="form-control" value="{{ old('fullname', $customer->Fullname ?? '') }}" required>
+                        </div>
 
-                    <div class="form-group mb-3">
-                        <label class="font-weight-bold text-muted small d-block">Giới tính</label>
-                        <div class="d-flex align-items-center">
-                            <div class="custom-control custom-radio mr-4">
-                                <input type="radio" id="male" name="gender" value="male" class="custom-control-input"
-                                    {{ (old('gender', $customer->Gender ?? 'male') === 'male') ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="male">Nam</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="female" name="gender" value="female" class="custom-control-input"
-                                    {{ (old('gender', $customer->Gender ?? '') === 'female') ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="female">Nữ</label>
+                        <div class="form-group mb-3 text-left">
+                            <label class="font-weight-bold text-muted small d-block">Giới tính</label>
+                            <div class="d-flex align-items-center">
+                                <div class="custom-control custom-radio mr-4">
+                                    <input type="radio" id="male" name="gender" value="male" class="custom-control-input"
+                                        {{ (old('gender', $customer->Gender ?? 'male') === 'male') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="male">Nam</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="female" name="gender" value="female" class="custom-control-input"
+                                        {{ (old('gender', $customer->Gender ?? '') === 'female') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="female">Nữ</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group mb-3">
-                        <label for="email" class="font-weight-bold text-muted small">Địa chỉ Email *</label>
-                        <input type="email" name="email" id="email" placeholder="example@gmail.com"
-                            class="form-control" value="{{ old('email', $customer->Email ?? '') }}" required>
-                    </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="email" class="font-weight-bold text-muted small d-block">Địa chỉ Email *</label>
+                            <input type="email" name="email" id="email" placeholder="example@gmail.com"
+                                class="form-control" value="{{ old('email', $customer->Email ?? '') }}" required>
+                        </div>
 
-                    <div class="form-group mb-3">
-                        <label for="sdt" class="font-weight-bold text-muted small">Số điện thoại *</label>
-                        <input type="tel" name="sdt" id="sdt" placeholder="Số điện thoại liên hệ..."
-                            class="form-control" value="{{ old('sdt', $customer->Phonenumber ?? '') }}" required>
-                    </div>
+                        <div class="form-group mb-3 text-left">
+                            <label for="sdt" class="font-weight-bold text-muted small d-block">Số điện thoại *</label>
+                            <input type="tel" name="sdt" id="sdt" placeholder="Số điện thoại liên hệ..."
+                                class="form-control" value="{{ old('sdt', $customer->Phonenumber ?? '') }}" required>
+                        </div>
 
-                    <div class="form-group mb-4">
-                        <label for="address" class="font-weight-bold text-muted small">Địa chỉ nhận hàng</label>
-                        <textarea name="address" id="address" placeholder="Nhập địa chỉ nhà..." rows="3"
-                            class="form-control">{{ old('address', $customer->Address ?? '') }}</textarea>
-                    </div>
+                        <div class="form-group mb-4 text-left">
+                            <label for="address" class="font-weight-bold text-muted small d-block">Địa chỉ nhận hàng</label>
+                            <textarea name="address" id="address" placeholder="Nhập địa chỉ nhà..." rows="3"
+                                class="form-control">{{ old('address', $customer->Address ?? '') }}</textarea>
+                        </div>
 
-                    <button type="submit" class="main_btn">Lưu thay đổi</button>
-                </form>
+                        <div class="text-left mt-4">
+                            <button type="submit" class="main_btn">Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- Cột phải: Đổi mật khẩu -->
