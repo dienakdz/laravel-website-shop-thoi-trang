@@ -14,28 +14,45 @@ class LoginAdminController extends Controller
     {
         $this->admin = new LoginAdmin();
     }
+
     public function index()
     {
-        $title = 'Đăng nhập Admin';
-        return view('admin/login', compact('title'));
+        if (session()->has('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        $title = 'Đăng nhập Quản trị viên - Eiser';
+        return view('admin.login', compact('title'));
     }
 
     public function login(Request $request)
     {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
         $username = $request->username;
         $password = $request->password;
-        
+
         $login = $this->admin->login($username, $password);
-        // dd($login);
-        if($login != null)
-        {
-            $request->session()->put('admin', $request->username);
-            return 'Trang quản trị!';
+
+        if ($login != null) {
+            $request->session()->put('admin', $login->AdminUser);
+            $request->session()->put('admin_id', $login->AdminID);
+            $request->session()->put('admin_name', $login->AdminName ?? $login->AdminUser);
+            $request->session()->put('admin_email', $login->AdminEmail ?? '');
+            $request->session()->put('admin_img', $login->AdminImg ?? '');
+
+            return redirect()->route('admin.dashboard')->with('msg_success', 'Đăng nhập trang quản trị thành công!');
+        } else {
+            return redirect()->route('admin.login')->with('msg-login', 'Tài khoản hoặc mật khẩu quản trị không chính xác!');
         }
-        else {
-            return redirect()->route('admin.login')->with('msg-login', 'Thông tin tài khoản hoặc mật khẩu không chính xác!');
-        }
-        
-        
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget(['admin', 'admin_id', 'admin_name', 'admin_email', 'admin_img']);
+        return redirect()->route('admin.login')->with('msg-login', 'Đã đăng xuất phiên làm việc quản trị!');
     }
 }

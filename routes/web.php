@@ -15,6 +15,7 @@ use App\Http\Controllers\clients\InforController;
 
 // Admin
 use App\Http\Controllers\admin\LoginAdminController;
+use App\Http\Controllers\admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +67,15 @@ Route::middleware('client.auth')->group(function () {
 
 // ==================== ROUTE ADMIN ====================
 Route::prefix('admin')->group(function () {
+    // Đăng nhập / Đăng xuất Admin
     Route::get('/', [LoginAdminController::class, 'index'])->name('admin.login');
-    Route::post('/', [LoginAdminController::class, 'login'])->name('admin.login');
+    Route::post('/', [LoginAdminController::class, 'login'])->name('admin.post-login');
+    Route::get('/logout', [LoginAdminController::class, 'logout'])->name('admin.logout');
+
+    // Các route yêu cầu quyền Quản trị viên
+    Route::middleware('admin.auth')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+        Route::post('/dashboard/quick-approve/{id}', [DashboardController::class, 'quickApprove'])->name('admin.quick-approve');
+    });
 });
 

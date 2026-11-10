@@ -2,7 +2,7 @@
 <div class="body_sign_in">
     <div class="container" id="container">
         <div class="form-container sign-in-container" id="signin-form">
-            <form action="" method="POST">
+            <form action="{{ route('admin.post-login') }}" method="POST">
                 @csrf
                 <h1>Đăng nhập</h1>
                 <div class="social-container">
