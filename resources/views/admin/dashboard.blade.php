@@ -85,6 +85,7 @@
                 <h2 style="font-size: 16px; font-weight: 700; color: #1e293b;">Đơn hàng mới nhất cần duyệt</h2>
                 <p style="font-size: 12px; color: #64748b;">Khách hàng vừa đặt qua website hôm nay</p>
             </div>
+            <a href="{{ route('admin.orders.index') }}" style="font-size: 13px; font-weight: 600; color: var(--primary); text-decoration: none;">Xem tất cả đơn &rarr;</a>
         </div>
 
         <div class="table-responsive">

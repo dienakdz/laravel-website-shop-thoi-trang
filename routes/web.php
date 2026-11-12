@@ -16,6 +16,7 @@ use App\Http\Controllers\clients\InforController;
 // Admin
 use App\Http\Controllers\admin\LoginAdminController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\OrderAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,11 @@ Route::prefix('admin')->group(function () {
     Route::middleware('admin.auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::post('/dashboard/quick-approve/{id}', [DashboardController::class, 'quickApprove'])->name('admin.quick-approve');
+
+        // Quản lý Đơn hàng
+        Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders.index');
+        Route::post('/orders/update-status/{id}', [OrderAdminController::class, 'updateStatus'])->name('admin.orders.update-status');
+        Route::get('/orders/print/{id}', [OrderAdminController::class, 'printInvoice'])->name('admin.orders.print');
     });
 });
 
