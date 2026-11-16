@@ -17,6 +17,7 @@ use App\Http\Controllers\clients\InforController;
 use App\Http\Controllers\admin\LoginAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\OrderAdminController;
+use App\Http\Controllers\admin\ProductAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders.index');
         Route::post('/orders/update-status/{id}', [OrderAdminController::class, 'updateStatus'])->name('admin.orders.update-status');
         Route::get('/orders/print/{id}', [OrderAdminController::class, 'printInvoice'])->name('admin.orders.print');
+
+        // Quản lý Sản phẩm
+        Route::get('/products', [ProductAdminController::class, 'index'])->name('admin.products.index');
+        Route::get('/products/create', [ProductAdminController::class, 'create'])->name('admin.products.create');
+        Route::post('/products/store', [ProductAdminController::class, 'store'])->name('admin.products.store');
+        Route::get('/products/edit/{id}', [ProductAdminController::class, 'edit'])->name('admin.products.edit');
+        Route::post('/products/update/{id}', [ProductAdminController::class, 'update'])->name('admin.products.update');
+        Route::post('/products/delete/{id}', [ProductAdminController::class, 'destroy'])->name('admin.products.destroy');
     });
 });
 

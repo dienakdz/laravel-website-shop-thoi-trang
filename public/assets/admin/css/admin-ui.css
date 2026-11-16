@@ -450,6 +450,7 @@ body {
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .status-pending { background: var(--status-pending-bg); color: var(--status-pending-text); }

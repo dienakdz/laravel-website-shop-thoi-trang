@@ -11,6 +11,10 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
             <span>Xem cửa hàng</span>
         </a>
+        <a href="{{ route('admin.products.create') }}" class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Thêm sản phẩm</span>
+        </a>
     </div>
 </div>
 
@@ -163,8 +167,8 @@
             @forelse($topProducts as $prod)
                 <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9;">
                     <div style="width: 44px; height: 44px; border-radius: 6px; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                        @if($prod->Picture && file_exists(public_path('assets/clients/img/product/' . $prod->Picture)))
-                            <img src="{{ asset('assets/clients/img/product/' . $prod->Picture) }}" alt="{{ $prod->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @if($prod->Picture && file_exists(public_path('assets/admin/img/upload/' . $prod->Picture)))
+                            <img src="{{ asset('assets/admin/img/upload/' . $prod->Picture) }}" alt="{{ $prod->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
                         @else
                             <span style="font-size: 20px;">👕</span>
                         @endif

@@ -374,8 +374,8 @@
                                         <td>
                                             <div style="display: flex; align-items: center; gap: 10px;">
                                                 <div style="width: 40px; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                                                    @if($item->Picture && file_exists(public_path('assets/clients/img/product/' . $item->Picture)))
-                                                        <img src="{{ asset('assets/clients/img/product/' . $item->Picture) }}" alt="{{ $item->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    @if($item->Picture && file_exists(public_path('assets/admin/img/upload/' . $item->Picture)))
+                                                        <img src="{{ asset('assets/admin/img/upload/' . $item->Picture) }}" alt="{{ $item->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
                                                     @else
                                                         <span style="font-size: 18px;">👕</span>
                                                     @endif
