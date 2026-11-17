@@ -60,29 +60,24 @@ class OrderAdminController extends Controller
 
         $orders = $query->orderBy('OrderID', 'desc')->paginate(10)->withQueryString();
 
-        // 3. Đơn hàng đang được xem chi tiết (preview_id hoặc đơn đầu tiên)
+        // 3. Đơn hàng đang được xem chi tiết (nếu có preview_id trong URL)
         $previewId = $request->query('preview_id');
         $previewOrder = null;
         $previewItems = collect();
 
         if ($previewId) {
             $previewOrder = DB::table('orderproduct')->where('OrderID', $previewId)->first();
-        }
-
-        if (!$previewOrder && $orders->count() > 0) {
-            $previewOrder = $orders->first();
-        }
-
-        if ($previewOrder) {
-            $previewItems = DB::table('orderdetail')
-                ->leftJoin('product', 'orderdetail.ProductID', '=', 'product.ProductID')
-                ->where('orderdetail.OrderID', $previewOrder->OrderID)
-                ->select(
-                    'orderdetail.*',
-                    'product.ProductName',
-                    'product.Picture'
-                )
-                ->get();
+            if ($previewOrder) {
+                $previewItems = DB::table('orderdetail')
+                    ->leftJoin('product', 'orderdetail.ProductID', '=', 'product.ProductID')
+                    ->where('orderdetail.OrderID', $previewOrder->OrderID)
+                    ->select(
+                        'orderdetail.*',
+                        'product.ProductName',
+                        'product.Picture'
+                    )
+                    ->get();
+            }
         }
 
         return view('admin.orders.index', compact(
@@ -98,6 +93,73 @@ class OrderAdminController extends Controller
             'previewOrder',
             'previewItems'
         ));
+    }
+
+    public function getOrderDetailJson($id)
+    {
+        $order = DB::table('orderproduct')->where('OrderID', $id)->first();
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn hàng #' . $id
+            ], 404);
+        }
+
+        $items = DB::table('orderdetail')
+            ->leftJoin('product', 'orderdetail.ProductID', '=', 'product.ProductID')
+            ->where('orderdetail.OrderID', $id)
+            ->select(
+                'orderdetail.*',
+                'product.ProductName',
+                'product.Picture'
+            )
+            ->get();
+
+        $mappedItems = $items->map(function ($item) {
+            $imgUrl = null;
+            if (!empty($item->Picture)) {
+                if (file_exists(public_path('assets/admin/img/upload/' . $item->Picture))) {
+                    $imgUrl = asset('assets/admin/img/upload/' . $item->Picture);
+                } elseif (file_exists(public_path('assets/clients/img/product/' . $item->Picture))) {
+                    $imgUrl = asset('assets/clients/img/product/' . $item->Picture);
+                }
+            }
+            $item->picture_url = $imgUrl;
+            $qty = max(1, (int)$item->QuantityOrdered);
+            $item->unit_price = (int)round($item->Price / $qty);
+            return $item;
+        });
+
+        $statusLabels = [
+            '1' => ['label' => 'Chờ xác nhận', 'class' => 'status-pending'],
+            '2' => ['label' => 'Đang chuẩn bị', 'class' => 'status-preparing'],
+            '3' => ['label' => 'Đang giao hàng', 'class' => 'status-shipping'],
+            '4' => ['label' => 'Hoàn thành', 'class' => 'status-completed'],
+            '5' => ['label' => 'Đã hủy', 'class' => 'status-cancelled'],
+        ];
+
+        $currentStatusMeta = $statusLabels[$order->Status] ?? ['label' => 'Không xác định', 'class' => 'status-pending'];
+
+        return response()->json([
+            'success' => true,
+            'order' => [
+                'OrderID' => $order->OrderID,
+                'code' => '#DH-' . str_pad($order->OrderID, 4, '0', STR_PAD_LEFT),
+                'Fulname' => $order->Fulname ?? 'Khách vãng lai',
+                'Phonenumber' => $order->Phonenumber ?? '---',
+                'Address' => $order->Address ?? 'Chưa cung cấp',
+                'Shippingtype' => $order->Shippingtype ?? 'COD',
+                'OrderDate' => $order->OrderDate,
+                'Totalprice' => (float)$order->Totalprice,
+                'Totalprice_formatted' => number_format($order->Totalprice, 0, ',', '.') . ' ₫',
+                'Status' => (string)$order->Status,
+                'status_label' => $currentStatusMeta['label'],
+                'status_class' => $currentStatusMeta['class'],
+            ],
+            'items' => $mappedItems,
+            'update_url' => route('admin.orders.update-status', $order->OrderID),
+            'print_url' => route('admin.orders.print', $order->OrderID),
+        ]);
     }
 
     public function updateStatus(Request $request, $id)

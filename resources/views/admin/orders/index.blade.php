@@ -78,16 +78,115 @@
         outline: none;
     }
 
-    .order-detail-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
+    /* MODAL POPUP CHI TIẾT ĐƠN HÀNG */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(2px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
         padding: 20px;
-        margin-top: 28px;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
     }
 
-    .row-highlight td {
-        background-color: rgba(113, 205, 20, 0.06) !important;
+    .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .order-modal-dialog {
+        background: #ffffff;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 920px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+        overflow: hidden;
+        animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalIn {
+        from {
+            transform: scale(0.96) translateY(12px);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .order-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+    }
+
+    .order-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #94a3b8;
+        cursor: pointer;
+        line-height: 1;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all 0.15s;
+    }
+
+    .order-modal-close:hover {
+        color: #0f172a;
+        background: #f1f5f9;
+    }
+
+    .order-modal-body {
+        padding: 22px 24px;
+        overflow-y: auto;
+        max-height: calc(90vh - 140px);
+    }
+
+    .order-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        border-top: 1px solid #e2e8f0;
+        background: #f8fafc;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .modal-spinner {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        border: 3px solid #e2e8f0;
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .badge-payment {
+        display: inline-block;
+        padding: 2px 8px;
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
     }
 
     /* Bootstrap 4 custom pagination override */
@@ -212,10 +311,10 @@
             </thead>
             <tbody>
                 @forelse($orders as $order)
-                    <tr class="{{ ($previewOrder && $previewOrder->OrderID == $order->OrderID) ? 'row-highlight' : '' }}">
+                    <tr>
                         <td>
-                            <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['preview_id' => $order->OrderID])) }}#order-preview" 
-                               style="text-decoration: none; color: #0f172a; font-weight: 700; font-size: 13px;">
+                            <a href="javascript:void(0)" onclick="openOrderModal({{ $order->OrderID }})" 
+                               style="text-decoration: none; color: var(--primary); font-weight: 700; font-size: 13px;" title="Xem chi tiết đơn hàng">
                                 #DH-{{ str_pad($order->OrderID, 4, '0', STR_PAD_LEFT) }}
                             </a>
                         </td>
@@ -281,10 +380,10 @@
                                     </form>
                                 @endif
 
-                                <a href="{{ route('admin.orders.index', array_merge(request()->query(), ['preview_id' => $order->OrderID])) }}#order-preview" 
+                                <button type="button" onclick="openOrderModal({{ $order->OrderID }})" 
                                    class="btn-icon-sm" title="Xem chi tiết đơn">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                </a>
+                                </button>
 
                                 <a href="{{ route('admin.orders.print', $order->OrderID) }}" target="_blank" 
                                    class="btn-icon-sm" title="In phiếu / Hóa đơn">
@@ -310,120 +409,312 @@
             {{ $orders->links() }}
         </div>
     @endif
+</div>
 
-    <!-- KHUNG XEM NHANH CHI TIẾT ĐƠN HÀNG TRỰC TIẾP TRÊN TRANG -->
-    @if($previewOrder)
-        <div class="order-detail-card" id="order-preview">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 15px; font-weight: 700; color: #0f172a;">
-                        👁️ Chi tiết đơn hàng: <span style="color: var(--primary);">#DH-{{ str_pad($previewOrder->OrderID, 4, '0', STR_PAD_LEFT) }}</span>
+<!-- MODAL POPUP CHI TIẾT ĐƠN HÀNG -->
+<div class="modal-overlay {{ $previewOrder ? 'show' : '' }}" id="orderDetailModal" onclick="handleOverlayClick(event)">
+    <div class="order-modal-dialog">
+        <!-- MODAL HEADER -->
+        <div class="order-modal-header">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <span style="font-size: 16px; font-weight: 700; color: #0f172a;" id="modalOrderCode">
+                    Chi tiết đơn hàng {{ $previewOrder ? '#DH-' . str_pad($previewOrder->OrderID, 4, '0', STR_PAD_LEFT) : '' }}
+                </span>
+                <span id="modalStatusBadge" class="status-pill {{ $previewOrder ? ($previewOrder->Status == '1' ? 'status-pending' : ($previewOrder->Status == '2' ? 'status-preparing' : ($previewOrder->Status == '3' ? 'status-shipping' : ($previewOrder->Status == '4' ? 'status-completed' : 'status-cancelled')))) : 'status-pending' }}">
+                    <span class="dot"></span><span id="modalStatusText">
+                        @if($previewOrder)
+                            @if($previewOrder->Status == '1') Chờ xác nhận
+                            @elseif($previewOrder->Status == '2') Đang chuẩn bị
+                            @elseif($previewOrder->Status == '3') Đang giao hàng
+                            @elseif($previewOrder->Status == '4') Hoàn thành
+                            @else Đã hủy
+                            @endif
+                        @else
+                            Chờ xác nhận
+                        @endif
                     </span>
-                    @if($previewOrder->Status == '1')
-                        <span class="status-pill status-pending"><span class="dot"></span>Chờ xác nhận</span>
-                    @elseif($previewOrder->Status == '2')
-                        <span class="status-pill status-preparing"><span class="dot"></span>Đang chuẩn bị</span>
-                    @elseif($previewOrder->Status == '3')
-                        <span class="status-pill status-shipping"><span class="dot"></span>Đang giao</span>
-                    @elseif($previewOrder->Status == '4')
-                        <span class="status-pill status-completed"><span class="dot"></span>Hoàn thành</span>
-                    @else
-                        <span class="status-pill status-cancelled"><span class="dot"></span>Đã hủy đơn</span>
-                    @endif
-                </div>
+                </span>
+            </div>
+            <button type="button" class="order-modal-close" onclick="closeOrderModal()" aria-label="Đóng">&times;</button>
+        </div>
 
-                <!-- FORM ĐỔI TRẠNG THÁI TRỰC TIẾP -->
-                <form action="{{ route('admin.orders.update-status', $previewOrder->OrderID) }}" method="POST" style="display: flex; align-items: center; gap: 8px; margin: 0;">
-                    @csrf
-                    <input type="hidden" name="current_tab" value="{{ $currentStatus }}">
-                    <span style="font-size: 13px; font-weight: 600; color: #475569;">Cập nhật trạng thái:</span>
-                    <select name="status" class="filter-select" style="font-weight: 600;">
-                        <option value="1" {{ $previewOrder->Status == '1' ? 'selected' : '' }}>1. Chờ xác nhận</option>
-                        <option value="2" {{ $previewOrder->Status == '2' ? 'selected' : '' }}>2. Đang chuẩn bị hàng</option>
-                        <option value="3" {{ $previewOrder->Status == '3' ? 'selected' : '' }}>3. Đang giao hàng</option>
-                        <option value="4" {{ $previewOrder->Status == '4' ? 'selected' : '' }}>4. Hoàn thành</option>
-                        <option value="5" {{ $previewOrder->Status == '5' ? 'selected' : '' }}>5. Hủy đơn hàng</option>
-                    </select>
-                    <button type="submit" class="btn-primary" style="padding: 7px 14px;">Lưu</button>
-                    <a href="{{ route('admin.orders.print', $previewOrder->OrderID) }}" target="_blank" class="btn-secondary" style="padding: 7px 12px;" title="In hóa đơn">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                        <span>In phiếu</span>
-                    </a>
-                </form>
+        <!-- MODAL BODY -->
+        <div class="order-modal-body">
+            <!-- Loading Indicator -->
+            <div id="modalLoading" style="display: none; text-align: center; padding: 48px 20px; color: #64748b;">
+                <div class="modal-spinner"></div>
+                <div style="margin-top: 12px; font-size: 13px; font-weight: 500;">Đang tải chi tiết đơn hàng...</div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <!-- Content Area -->
+            <div id="modalContent" style="display: {{ $previewOrder ? 'grid' : 'none' }}; grid-template-columns: 1.55fr 1fr; gap: 20px;">
                 <!-- DANH SÁCH SẢN PHẨM TRONG ĐƠN -->
                 <div>
-                    <div style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px;">
-                        Danh sách sản phẩm trong đơn ({{ $previewItems->count() }} mặt hàng)
+                    <div style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>📦 Sản phẩm trong đơn</span>
+                        <span id="modalItemCount" style="color: #64748b; font-weight: 600; font-size: 12px;">({{ $previewItems->count() }} món)</span>
                     </div>
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;">
-                        <table class="admin-table">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+                        <table class="admin-table" style="margin: 0;">
                             <thead>
                                 <tr>
                                     <th>Sản phẩm</th>
-                                    <th>Đơn giá</th>
-                                    <th>Số lượng</th>
-                                    <th>Thành tiền</th>
+                                    <th style="text-align: right;">Đơn giá</th>
+                                    <th style="text-align: center;">SL</th>
+                                    <th style="text-align: right;">Thành tiền</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse($previewItems as $item)
-                                    <tr>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <div style="width: 40px; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                                                    @if($item->Picture && file_exists(public_path('assets/admin/img/upload/' . $item->Picture)))
-                                                        <img src="{{ asset('assets/admin/img/upload/' . $item->Picture) }}" alt="{{ $item->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                                    @else
-                                                        <span style="font-size: 18px;">👕</span>
-                                                    @endif
+                            <tbody id="modalItemsTableBody">
+                                @if($previewOrder)
+                                    @forelse($previewItems as $item)
+                                        <tr>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div style="width: 40px; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                                                        @if($item->Picture && file_exists(public_path('assets/admin/img/upload/' . $item->Picture)))
+                                                            <img src="{{ asset('assets/admin/img/upload/' . $item->Picture) }}" alt="{{ $item->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                        @elseif($item->Picture && file_exists(public_path('assets/clients/img/product/' . $item->Picture)))
+                                                            <img src="{{ asset('assets/clients/img/product/' . $item->Picture) }}" alt="{{ $item->ProductName }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                        @else
+                                                            <span style="font-size: 18px;">👕</span>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 13px; color: #0f172a;">{{ $item->ProductName ?? ('Sản phẩm #' . $item->ProductID) }}</div>
+                                                        <div style="font-size: 11px; color: #64748b;">Mã SP: #SP-{{ $item->ProductID }}</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div style="font-weight: 600; font-size: 13px; color: #0f172a;">{{ $item->ProductName ?? 'Sản phẩm mã #' . $item->ProductID }}</div>
-                                                    <div style="font-size: 11px; color: #64748b;">Mã SP: #SP-{{ $item->ProductID }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ number_format($item->Price / max(1, $item->QuantityOrdered), 0, ',', '.') }} ₫</td>
-                                        <td><strong>x{{ $item->QuantityOrdered }}</strong></td>
-                                        <td><strong>{{ number_format($item->Price, 0, ',', '.') }} ₫</strong></td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 20px; color: #94a3b8;">
-                                            Chưa có chi tiết sản phẩm cho đơn hàng này.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                            </td>
+                                            <td style="text-align: right; font-size: 13px; color: #334155;">{{ number_format((int)round($item->Price / max(1, $item->QuantityOrdered)), 0, ',', '.') }} ₫</td>
+                                            <td style="text-align: center; font-size: 13px;"><strong>x{{ $item->QuantityOrdered }}</strong></td>
+                                            <td style="text-align: right; font-size: 13px; font-weight: 700; color: #0f172a;">{{ number_format($item->Price, 0, ',', '.') }} ₫</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 24px; color: #94a3b8;">Chưa có chi tiết sản phẩm cho đơn hàng này.</td>
+                                        </tr>
+                                    @endforelse
+                                @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- THÔNG TIN GIAO NHẬN & THANH TOÁN -->
-                <div style="background: #ffffff; padding: 18px; border-radius: 6px; border: 1px solid #e2e8f0;">
-                    <div style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
-                        Thông tin giao nhận
-                    </div>
-                    <div style="font-size: 13px; line-height: 1.8; color: #475569;">
-                        <div><strong>Người nhận:</strong> {{ $previewOrder->Fulname ?? 'Khách vãng lai' }}</div>
-                        <div><strong>Số điện thoại:</strong> {{ $previewOrder->Phonenumber ?? '---' }}</div>
-                        <div><strong>Địa chỉ:</strong> {{ $previewOrder->Address ?? '---' }}</div>
-                        <div><strong>Phương thức:</strong> {{ $previewOrder->Shippingtype ?? 'COD' }}</div>
-                        <div><strong>Thời gian đặt:</strong> {{ $previewOrder->OrderDate }}</div>
+                <div>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+                        <div style="font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                            <span>📍 Thông tin giao nhận</span>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.8; color: #475569;">
+                            <div><strong style="color: #0f172a;">Người nhận:</strong> <span id="modalCustomerName">{{ $previewOrder->Fulname ?? 'Khách vãng lai' }}</span></div>
+                            <div><strong style="color: #0f172a;">Số điện thoại:</strong> <span id="modalCustomerPhone">
+                                @if($previewOrder && $previewOrder->Phonenumber && $previewOrder->Phonenumber !== '---')
+                                    <a href="tel:{{ $previewOrder->Phonenumber }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">{{ $previewOrder->Phonenumber }}</a>
+                                @else
+                                    ---
+                                @endif
+                            </span></div>
+                            <div><strong style="color: #0f172a;">Địa chỉ:</strong> <span id="modalCustomerAddress">{{ $previewOrder->Address ?? 'Chưa cung cấp' }}</span></div>
+                            <div><strong style="color: #0f172a;">Hình thức:</strong> <span id="modalPaymentType" class="badge-payment">{{ $previewOrder->Shippingtype ?? 'COD' }}</span></div>
+                            <div><strong style="color: #0f172a;">Ngày đặt:</strong> <span id="modalOrderDate" style="color: #64748b;">{{ $previewOrder->OrderDate ?? '---' }}</span></div>
 
-                        <div style="border-top: 1px solid #f1f5f9; margin-top: 14px; padding-top: 12px; font-size: 14px; display: flex; align-items: center; justify-content: space-between;">
-                            <strong>Tổng thanh toán:</strong>
-                            <span style="color: #0f172a; font-weight: 700; font-size: 17px;">
-                                {{ number_format($previewOrder->Totalprice, 0, ',', '.') }} ₫
-                            </span>
+                            <div style="border-top: 1px solid #e2e8f0; margin-top: 14px; padding-top: 12px; display: flex; align-items: baseline; justify-content: space-between;">
+                                <strong style="color: #0f172a; font-size: 13px;">Tổng thanh toán:</strong>
+                                <span id="modalTotalPrice" style="color: var(--primary); font-weight: 800; font-size: 19px;">
+                                    {{ $previewOrder ? number_format($previewOrder->Totalprice, 0, ',', '.') . ' ₫' : '0 ₫' }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
+
+        <!-- MODAL FOOTER -->
+        <div class="order-modal-footer">
+            <!-- Form cập nhật trạng thái -->
+            <form id="modalStatusForm" method="POST" action="{{ $previewOrder ? route('admin.orders.update-status', $previewOrder->OrderID) : '' }}" style="display: flex; align-items: center; gap: 8px; margin: 0; flex-wrap: wrap;">
+                @csrf
+                <input type="hidden" name="current_tab" value="{{ $currentStatus }}">
+                <span style="font-size: 13px; font-weight: 600; color: #475569;">Cập nhật:</span>
+                <select name="status" id="modalStatusSelect" class="filter-select" style="font-weight: 600; min-width: 175px;">
+                    <option value="1" {{ ($previewOrder && $previewOrder->Status == '1') ? 'selected' : '' }}>1. Chờ xác nhận</option>
+                    <option value="2" {{ ($previewOrder && $previewOrder->Status == '2') ? 'selected' : '' }}>2. Đang chuẩn bị</option>
+                    <option value="3" {{ ($previewOrder && $previewOrder->Status == '3') ? 'selected' : '' }}>3. Đang giao hàng</option>
+                    <option value="4" {{ ($previewOrder && $previewOrder->Status == '4') ? 'selected' : '' }}>4. Hoàn thành</option>
+                    <option value="5" {{ ($previewOrder && $previewOrder->Status == '5') ? 'selected' : '' }}>5. Đã hủy đơn</option>
+                </select>
+                <button type="submit" class="btn-primary" style="padding: 7px 14px; font-size: 13px;">
+                    Lưu trạng thái
+                </button>
+            </form>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <a id="modalPrintBtn" href="{{ $previewOrder ? route('admin.orders.print', $previewOrder->OrderID) : '#' }}" target="_blank" class="btn-secondary" style="padding: 7px 12px; font-size: 13px;" title="In hóa đơn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    <span>In hóa đơn</span>
+                </a>
+                <button type="button" class="btn-secondary" onclick="closeOrderModal()" style="padding: 7px 14px; font-size: 13px;">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    const orderModal = document.getElementById('orderDetailModal');
+    const detailUrlPattern = "{{ route('admin.orders.detail-json', ':id') }}";
+    let currentRenderedId = {{ $previewOrder ? $previewOrder->OrderID : 'null' }};
+
+    function openOrderModal(orderId) {
+        if (!orderModal) return;
+
+        // Hiện modal
+        orderModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+
+        // Cập nhật preview_id trên URL mà không reload trang
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('preview_id', orderId);
+        window.history.replaceState({}, '', currentUrl.toString());
+
+        // Nếu ID trùng với order đã được SSR render sẵn thì không cần fetch lại
+        if (currentRenderedId && String(currentRenderedId) === String(orderId)) {
+            document.getElementById('modalLoading').style.display = 'none';
+            document.getElementById('modalContent').style.display = 'grid';
+            return;
+        }
+
+        // Bật loading và ẩn content
+        document.getElementById('modalLoading').style.display = 'block';
+        document.getElementById('modalContent').style.display = 'none';
+
+        // Gọi API lấy thông tin chi tiết đơn
+        const fetchUrl = detailUrlPattern.replace(':id', orderId);
+        fetch(fetchUrl)
+            .then(res => {
+                if (!res.ok) throw new Error('Không thể tải dữ liệu đơn hàng');
+                return res.json();
+            })
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || 'Lỗi khi tải đơn hàng');
+                    closeOrderModal();
+                    return;
+                }
+
+                currentRenderedId = orderId;
+                const order = data.order;
+                const items = data.items;
+
+                // Header & Badges
+                document.getElementById('modalOrderCode').innerText = 'Chi tiết đơn hàng ' + order.code;
+                const statusBadge = document.getElementById('modalStatusBadge');
+                statusBadge.className = 'status-pill ' + order.status_class;
+                document.getElementById('modalStatusText').innerText = order.status_label;
+
+                // Thông tin khách hàng & Giao nhận
+                document.getElementById('modalCustomerName').innerText = order.Fulname;
+                document.getElementById('modalCustomerPhone').innerHTML = order.Phonenumber && order.Phonenumber !== '---'
+                    ? `<a href="tel:${order.Phonenumber}" style="color: var(--primary); text-decoration: none; font-weight: 600;">${order.Phonenumber}</a>`
+                    : '---';
+                document.getElementById('modalCustomerAddress').innerText = order.Address;
+                document.getElementById('modalPaymentType').innerText = order.Shippingtype;
+                document.getElementById('modalOrderDate').innerText = order.OrderDate;
+                document.getElementById('modalTotalPrice').innerText = order.Totalprice_formatted;
+
+                // Danh sách sản phẩm
+                document.getElementById('modalItemCount').innerText = `(${items.length} món)`;
+                const tbody = document.getElementById('modalItemsTableBody');
+                tbody.innerHTML = '';
+
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 24px; color: #94a3b8;">Chưa có chi tiết sản phẩm cho đơn hàng này.</td></tr>';
+                } else {
+                    items.forEach(item => {
+                        const imgTag = item.picture_url
+                            ? `<img src="${item.picture_url}" alt="${item.ProductName || ''}" style="width: 100%; height: 100%; object-fit: cover;">`
+                            : `<span style="font-size: 18px;">👕</span>`;
+
+                        const unitFormatted = new Intl.NumberFormat('vi-VN').format(item.unit_price) + ' ₫';
+                        const totalFormatted = new Intl.NumberFormat('vi-VN').format(item.Price) + ' ₫';
+
+                        const tr = `
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 40px; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                                            ${imgTag}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 13px; color: #0f172a;">${item.ProductName || ('Sản phẩm #' + item.ProductID)}</div>
+                                            <div style="font-size: 11px; color: #64748b;">Mã SP: #SP-${item.ProductID}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="text-align: right; font-size: 13px; color: #334155;">${unitFormatted}</td>
+                                <td style="text-align: center; font-size: 13px;"><strong>x${item.QuantityOrdered}</strong></td>
+                                <td style="text-align: right; font-size: 13px; font-weight: 700; color: #0f172a;">${totalFormatted}</td>
+                            </tr>
+                        `;
+                        tbody.insertAdjacentHTML('beforeend', tr);
+                    });
+                }
+
+                // Cập nhật Form Action & In phiếu
+                document.getElementById('modalStatusForm').action = data.update_url;
+                document.getElementById('modalStatusSelect').value = order.Status;
+                document.getElementById('modalPrintBtn').href = data.print_url;
+
+                // Tắt spinner và hiển thị nội dung
+                document.getElementById('modalLoading').style.display = 'none';
+                document.getElementById('modalContent').style.display = 'grid';
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Không thể kết nối đến máy chủ để tải đơn hàng.');
+                closeOrderModal();
+            });
+    }
+
+    function closeOrderModal() {
+        if (!orderModal) return;
+        orderModal.classList.remove('show');
+        document.body.style.overflow = '';
+
+        // Xóa preview_id khỏi query URL mà không tải lại trang
+        const currentUrl = new URL(window.location.href);
+        if (currentUrl.searchParams.has('preview_id')) {
+            currentUrl.searchParams.delete('preview_id');
+            const cleanQuery = currentUrl.searchParams.toString() ? '?' + currentUrl.searchParams.toString() : '';
+            window.history.replaceState({}, '', currentUrl.pathname + cleanQuery);
+        }
+    }
+
+    function handleOverlayClick(event) {
+        if (event.target === orderModal) {
+            closeOrderModal();
+        }
+    }
+
+    // Đóng khi bấm phím ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && orderModal && orderModal.classList.contains('show')) {
+            closeOrderModal();
+        }
+    });
+
+    // Tự động mở modal nếu có tham số preview_id trên URL (khi vào link trực tiếp hoặc vừa cập nhật xong)
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const previewId = urlParams.get('preview_id');
+        if (previewId) {
+            openOrderModal(previewId);
+        }
+    });
+</script>
 @endsection

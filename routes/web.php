@@ -84,6 +84,7 @@ Route::prefix('admin')->group(function () {
 
         // Quản lý Đơn hàng
         Route::get('/orders', [OrderAdminController::class, 'index'])->name('admin.orders.index');
+        Route::get('/orders/detail-json/{id}', [OrderAdminController::class, 'getOrderDetailJson'])->name('admin.orders.detail-json');
         Route::post('/orders/update-status/{id}', [OrderAdminController::class, 'updateStatus'])->name('admin.orders.update-status');
         Route::get('/orders/print/{id}', [OrderAdminController::class, 'printInvoice'])->name('admin.orders.print');
 
