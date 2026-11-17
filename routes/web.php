@@ -18,6 +18,9 @@ use App\Http\Controllers\admin\LoginAdminController;
 use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\admin\OrderAdminController;
 use App\Http\Controllers\admin\ProductAdminController;
+use App\Http\Controllers\admin\CategoryAdminController;
+use App\Http\Controllers\admin\CustomerAdminController;
+use App\Http\Controllers\admin\ContactAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +94,25 @@ Route::prefix('admin')->group(function () {
         Route::get('/products/edit/{id}', [ProductAdminController::class, 'edit'])->name('admin.products.edit');
         Route::post('/products/update/{id}', [ProductAdminController::class, 'update'])->name('admin.products.update');
         Route::post('/products/delete/{id}', [ProductAdminController::class, 'destroy'])->name('admin.products.destroy');
+
+        // Quản lý Danh mục & Thương hiệu
+        Route::get('/categories', [CategoryAdminController::class, 'index'])->name('admin.categories.index');
+        Route::post('/categories/store', [CategoryAdminController::class, 'storeCategory'])->name('admin.categories.store');
+        Route::post('/categories/update/{id}', [CategoryAdminController::class, 'updateCategory'])->name('admin.categories.update');
+        Route::post('/categories/delete/{id}', [CategoryAdminController::class, 'destroyCategory'])->name('admin.categories.destroy');
+
+        Route::post('/brands/store', [CategoryAdminController::class, 'storeBrand'])->name('admin.brands.store');
+        Route::post('/brands/update/{id}', [CategoryAdminController::class, 'updateBrand'])->name('admin.brands.update');
+        Route::post('/brands/delete/{id}', [CategoryAdminController::class, 'destroyBrand'])->name('admin.brands.destroy');
+
+        // Quản lý Khách hàng
+        Route::get('/customers', [CustomerAdminController::class, 'index'])->name('admin.customers.index');
+        Route::post('/customers/toggle-status/{id}', [CustomerAdminController::class, 'toggleStatus'])->name('admin.customers.toggle-status');
+
+        // Hòm thư Liên hệ
+        Route::get('/contacts', [ContactAdminController::class, 'index'])->name('admin.contacts.index');
+        Route::post('/contacts/mark-read/{id}', [ContactAdminController::class, 'markRead'])->name('admin.contacts.mark-read');
+        Route::post('/contacts/delete/{id}', [ContactAdminController::class, 'destroy'])->name('admin.contacts.destroy');
     });
 });
 
