@@ -21,7 +21,7 @@ class LoginAdminController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $title = 'Đăng nhập Quản trị viên - Eiser';
+        $title = 'Đăng nhập Quản trị viên - DDien Admin';
         return view('admin.login', compact('title'));
     }
 

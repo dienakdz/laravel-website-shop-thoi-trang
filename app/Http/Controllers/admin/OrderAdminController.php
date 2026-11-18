@@ -10,7 +10,7 @@ class OrderAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $title = 'Quản lý Đơn hàng - Eiser Admin';
+        $title = 'Quản lý Đơn hàng - DDien Admin';
 
         // 1. Thống kê số lượng đơn hàng theo từng trạng thái
         $allCount = DB::table('orderproduct')->count();

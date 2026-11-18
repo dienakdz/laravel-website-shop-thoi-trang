@@ -10,7 +10,7 @@ class CustomerAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $title = 'Quản lý Khách hàng - Eiser Admin';
+        $title = 'Quản lý Khách hàng - DDien Admin';
 
         $totalCustomers = DB::table('customer')->count();
         $activeCustomers = DB::table('customer')->where('Status', 1)->count();

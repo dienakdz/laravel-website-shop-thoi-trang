@@ -4,13 +4,13 @@
         <div class="row">
             <!-- Cột 1: Giới thiệu Shop -->
             <div class="col-lg-4 col-md-6 single-footer-widget mb-4 mb-lg-0">
-                <h4>Về Shop Thời Trang</h4>
+                <h4>Về DDien Fashion</h4>
                 <p>
                     Chúng tôi mang đến những bộ sưu tập thời trang hiện đại, phong cách và chất lượng tốt nhất với mức giá hợp lý. Tự tin khẳng định gu thời trang riêng của bạn mỗi ngày.
                 </p>
                 <p><i class="fa fa-map-marker mr-2 text-success"></i> <strong>Địa chỉ:</strong> 470 Trần Đại Nghĩa, Q. Ngũ Hành Sơn, TP. Đà Nẵng</p>
                 <p><i class="fa fa-phone mr-2 text-success"></i> <strong>Hotline:</strong> 0967.468.703 (8h00 - 21h30)</p>
-                <p><i class="fa fa-envelope mr-2 text-success"></i> <strong>Email:</strong> support@shopthoitrang.vn</p>
+                <p><i class="fa fa-envelope mr-2 text-success"></i> <strong>Email:</strong> support@ddien.vn</p>
             </div>
 
             <!-- Cột 2: Danh mục sản phẩm -->
@@ -64,7 +64,7 @@
         <!-- Footer Bottom -->
         <div class="footer-bottom row align-items-center">
             <p class="footer-text m-0 col-lg-8 col-md-12">
-                Bản quyền &copy; {{ date('Y') }} <strong>Shop Thời Trang</strong>. Thiết kế và phát triển với niềm đam mê.
+                Bản quyền &copy; {{ date('Y') }} <strong>DDien Fashion</strong>. Thiết kế và phát triển với niềm đam mê.
             </p>
             <div class="col-lg-4 col-md-12 footer-social text-lg-right text-left mt-3 mt-lg-0">
                 <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>

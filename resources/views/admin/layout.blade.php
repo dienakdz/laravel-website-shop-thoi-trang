@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Trang Quản trị - Eiser' }}</title>
+    <link rel="icon" href="{{ asset('assets/clients/img/favicon.png') }}" type="image/png" />
+    <title>{{ $title ?? 'DDien Admin - Quản trị cửa hàng' }}</title>
     
-    <!-- Google Font Plus Jakarta Sans & Eiser Brand CSS -->
+    <!-- Google Font Plus Jakarta Sans & DDien Brand CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin/css/admin-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/clients/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/clients/css/themify-icons.css') }}">
@@ -18,9 +19,14 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="{{ route('admin.dashboard') }}" class="brand-logo">
-                <div class="brand-icon">E</div>
+                <div class="brand-icon" style="background: transparent; display: flex; align-items: center; justify-content: center; width: 38px; height: 34px;">
+                    <svg width="38" height="34" viewBox="0 0 52 44" fill="none">
+                        <path d="M4 6H20C29.94 6 38 13.16 38 22C38 30.84 29.94 38 20 38H4V6Z" stroke="#71cd14" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 6H32C41.94 6 50 13.16 50 22C50 30.84 41.94 38 32 38H16" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
                 <div>
-                    <span class="brand-text">EISER</span>
+                    <span class="brand-text" style="letter-spacing: -0.5px;"><span style="color: #71cd14;">DD</span>ien</span>
                     <span class="brand-tag">ADMIN</span>
                 </div>
             </a>

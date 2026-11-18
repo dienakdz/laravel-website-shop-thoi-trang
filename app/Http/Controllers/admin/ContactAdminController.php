@@ -10,7 +10,7 @@ class ContactAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $title = 'Hòm thư Liên hệ & Phản hồi - Eiser Admin';
+        $title = 'Hòm thư Liên hệ & Phản hồi - DDien Admin';
 
         $totalContacts = DB::table('contact')->count();
         $unreadContacts = DB::table('contact')->where('Status', '0')->count();

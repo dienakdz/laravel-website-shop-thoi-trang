@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="icon" href="{{ asset('assets/clients/img/favicon.png') }}" type="image/png" />
-    <title>{{ $title ?? 'Shop Thời Trang' }}</title>
+    <title>{{ $title ?? 'DDien Fashion - Phong Cách Thời Trang Hiện Đại' }}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('assets/clients/css/bootstrap.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/clients/vendors/linericon/style.css') }}" />
@@ -48,7 +48,7 @@
                     <div class="col-lg-7 col-md-7">
                         <div class="float-left">
                             <p><i class="fa fa-phone"></i> Hotline: <strong>0967.468.703</strong></p>
-                            <p><i class="fa fa-envelope"></i> Email: support@shopthoitrang.vn</p>
+                            <p><i class="fa fa-envelope"></i> Email: support@ddien.vn</p>
                         </div>
                     </div>
                     <div class="col-lg-5 col-md-5">
@@ -64,7 +64,7 @@
                 <nav class="navbar navbar-expand-lg navbar-light w-100">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <a class="navbar-brand logo_h" href="{{ route('home') }}">
-                        <img src="{{ asset('assets/clients/img/logo.png') }}" alt="Shop Thời Trang" />
+                        <img src="{{ asset('assets/clients/img/logo.png') }}" alt="DDien Fashion" style="height: 42px; width: auto;" />
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

@@ -254,7 +254,7 @@
         document.getElementById('m_date').innerText = date;
         document.getElementById('m_title').innerText = title;
         document.getElementById('m_content').innerText = content;
-        document.getElementById('m_reply_link').href = 'mailto:' + email + '?subject=Phản hồi từ Eiser: ' + encodeURIComponent(title);
+        document.getElementById('m_reply_link').href = 'mailto:' + email + '?subject=Phản hồi từ DDien Fashion: ' + encodeURIComponent(title);
         document.getElementById('contactModal').style.display = 'flex';
     }
 

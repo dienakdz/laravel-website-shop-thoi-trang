@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $title = 'Bảng điều khiển Quản trị - Eiser';
+        $title = 'Bảng điều khiển Quản trị - DDien Admin';
 
         // 1. Thống kê doanh thu
         $completedRevenue = DB::table('orderproduct')->where('Status', '4')->sum('Totalprice');

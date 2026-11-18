@@ -11,7 +11,7 @@ class CategoryAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $title = 'Quản lý Danh mục & Thương hiệu - Eiser Admin';
+        $title = 'Quản lý Danh mục & Thương hiệu - DDien Admin';
         $activeTab = $request->query('tab', 'categories');
 
         // Danh sách Danh mục kèm số lượng sản phẩm

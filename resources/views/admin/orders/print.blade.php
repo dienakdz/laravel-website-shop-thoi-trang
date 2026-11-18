@@ -106,9 +106,9 @@
     <div class="invoice-box">
         <div class="header">
             <div>
-                <div class="brand">EISER FASHION</div>
-                <div>Website thời trang chính hãng Eiser</div>
-                <div>Hotline: 0967.468.703 • Email: support@shopthoitrang.vn</div>
+                <div class="brand">DDIEN FASHION</div>
+                <div>Website thời trang chính hãng DDien</div>
+                <div>Hotline: 0967.468.703 • Email: support@ddien.vn</div>
             </div>
             <div style="text-align: right;">
                 <div style="font-size: 16px; font-weight: bold;">HÓA ĐƠN BÁN HÀNG</div>

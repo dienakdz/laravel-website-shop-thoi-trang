@@ -11,7 +11,7 @@ class ProductAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $title = 'Quản lý Sản phẩm & Kho hàng - Eiser Admin';
+        $title = 'Quản lý Sản phẩm & Kho hàng - DDien Admin';
 
         $categories = DB::table('categories')->get();
         $brands = DB::table('brand')->get();
@@ -82,7 +82,7 @@ class ProductAdminController extends Controller
 
     public function create()
     {
-        $title = 'Thêm Sản phẩm mới - Eiser Admin';
+        $title = 'Thêm Sản phẩm mới - DDien Admin';
         $categories = DB::table('categories')->get();
         $brands = DB::table('brand')->get();
         $statuses = DB::table('productstatus')->get();

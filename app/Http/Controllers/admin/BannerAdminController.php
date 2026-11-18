@@ -11,7 +11,7 @@ class BannerAdminController extends Controller
 {
     public function index()
     {
-        $title = 'Quản lý Banner Trang chủ - Eiser Admin';
+        $title = 'Quản lý Banner Trang chủ - DDien Admin';
         $banners = DB::table('banner')->orderBy('is_active', 'desc')->orderBy('id', 'asc')->get();
 
         // Helper map banner image URL
