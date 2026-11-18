@@ -21,6 +21,7 @@ use App\Http\Controllers\admin\ProductAdminController;
 use App\Http\Controllers\admin\CategoryAdminController;
 use App\Http\Controllers\admin\CustomerAdminController;
 use App\Http\Controllers\admin\ContactAdminController;
+use App\Http\Controllers\admin\BannerAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +115,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/contacts', [ContactAdminController::class, 'index'])->name('admin.contacts.index');
         Route::post('/contacts/mark-read/{id}', [ContactAdminController::class, 'markRead'])->name('admin.contacts.mark-read');
         Route::post('/contacts/delete/{id}', [ContactAdminController::class, 'destroy'])->name('admin.contacts.destroy');
+
+        // Quản lý Banner Trang chủ
+        Route::get('/banners', [BannerAdminController::class, 'index'])->name('admin.banners.index');
+        Route::post('/banners/store', [BannerAdminController::class, 'store'])->name('admin.banners.store');
+        Route::post('/banners/update/{id}', [BannerAdminController::class, 'update'])->name('admin.banners.update');
+        Route::post('/banners/set-active/{id}', [BannerAdminController::class, 'setActive'])->name('admin.banners.set-active');
+        Route::post('/banners/delete/{id}', [BannerAdminController::class, 'destroy'])->name('admin.banners.destroy');
     });
 });
 
